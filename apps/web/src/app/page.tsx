@@ -1,13 +1,34 @@
-import { Button } from "@/shared/components/shadcn/button";
+import {
+  BottomLeftOptions,
+  EmptyCard,
+  Toolbar,
+  TopLeftMenu,
+  TopRightMenu,
+} from "@/features/canvas";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-6 text-center">
-      <h1 className="text-4xl font-bold tracking-tight">Vizi</h1>
-      <p className="mt-2 text-lg text-muted-foreground">
-        Real-time collaborative whiteboard
-      </p>
-      <Button>Get Started</Button>
+    <main className="relative flex h-screen w-screen overflow-hidden bg-background">
+      {/* Top Left Menu */}
+      <TopLeftMenu />
+
+      {/* Top Centered Header Toolbar */}
+      <Toolbar />
+
+      {/* Top Right Menu */}
+      <TopRightMenu />
+
+      {/* Center Empty Canvas State Card */}
+      <EmptyCard />
+
+      {/* Bottom Left Controls */}
+      <BottomLeftOptions />
+
+      {/* Infinite Canvas Background Surface */}
+      <div
+        className="h-full w-full bg-[radial-gradient(var(--primary)_1px,transparent_1px)] bg-size-[24px_24px] opacity-70"
+        aria-hidden="true"
+      />
     </main>
   );
 }

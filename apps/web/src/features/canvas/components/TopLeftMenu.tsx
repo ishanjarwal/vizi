@@ -66,9 +66,14 @@ export function TopLeftMenu({ className }: Props) {
                       <KbdGroup className="gap-[2px]">
                         {kbd_items.map((it) => {
                           return it === "+" ? (
-                            <span className="text-[8px]">+</span>
+                            <span key={item.id + it} className="text-[8px]">
+                              +
+                            </span>
                           ) : (
-                            <Kbd className="font-mono text-[8px] tracking-tight">
+                            <Kbd
+                              key={item.id + it}
+                              className="font-mono text-[8px] tracking-tight"
+                            >
                               {it}
                             </Kbd>
                           );

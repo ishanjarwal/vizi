@@ -51,4 +51,34 @@ export const CANVAS_THEME = {
   history: {
     maxDepth: 50,
   },
+  palette: {
+    fills: [
+      { name: "Transparent", value: "transparent" },
+      { name: "Rose", value: "#fff1f2" },
+      { name: "Yellow", value: "#fef08a" },
+      { name: "Green", value: "#dcfce7" },
+      { name: "Blue", value: "#e0f2fe" },
+      { name: "Purple", value: "#f3e8ff" },
+      { name: "Orange", value: "#fed7aa" },
+    ],
+    strokes: [
+      { name: "Slate", value: "#1e293b" },
+      { name: "Rose", value: "#e11d48" },
+      { name: "Blue", value: "#2563eb" },
+      { name: "Green", value: "#16a34a" },
+      { name: "Amber", value: "#d97706" },
+      { name: "Purple", value: "#9333ea" },
+    ],
+    strokeWidths: [
+      { label: "Thin", value: 1 },
+      { label: "Medium", value: 2 },
+      { label: "Thick", value: 4 },
+    ],
+    fontSizes: [
+      { label: "S", value: 18 },
+      { label: "M", value: 24 },
+      { label: "L", value: 36 },
+      { label: "XL", value: 48 },
+    ],
+  },
 } as const;

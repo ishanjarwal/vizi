@@ -10,14 +10,13 @@ import type {
   BoundingBox,
   CanvasElement,
   CanvasStageProps as Props,
-  StickyElement,
   TextElement,
 } from "../types";
 import { generateElementId, screenToCanvasPoint } from "../utils/helper";
 import { CanvasShapeRenderer } from "./CanvasShapeRenderer";
 import { CanvasTransformer } from "./CanvasTransformer";
 import { SelectionMarquee } from "./SelectionMarquee";
-import { StickyColorPalette } from "./StickyColorPalette";
+import { ShapeFloatingToolbar } from "./ShapeFloatingToolbar";
 import { TextEditorOverlay } from "./TextEditorOverlay";
 
 export function CanvasStage({
@@ -412,33 +411,63 @@ export function CanvasStage({
 
   const editingElement = elements.find((el) => el.id === editingElementId) ?? null;
 
-  const selectedStickyElement = React.useMemo(() => {
-    if (editingElement?.type === "sticky") {
-      return editingElement as StickyElement;
+  const selectedShapeElement = React.useMemo(() => {
+    if (editingElement) {
+      return editingElement;
     }
     if (selectedIds.length === 1) {
-      const el = elements.find((item) => item.id === selectedIds[0]);
-      if (el?.type === "sticky") {
-        return el as StickyElement;
-      }
+      return elements.find((item) => item.id === selectedIds[0]) ?? null;
     }
     return null;
   }, [editingElement, selectedIds, elements]);
 
-  const handleStickyColorChange = React.useCallback(
-    (color: string) => {
-      if (!selectedStickyElement) return;
-      const targetId = selectedStickyElement.id;
-      const nextElements = elements.map((el) => {
-        if (el.id === targetId && el.type === "sticky") {
-          return { ...el, colorScheme: color, fill: color };
-        }
-        return el;
-      });
+  const handleUpdateElement = React.useCallback(
+    (updated: CanvasElement) => {
+      const nextElements = elements.map((el) =>
+        el.id === updated.id ? updated : el,
+      );
       onElementsChange(nextElements);
       recordSnapshot(nextElements);
     },
-    [selectedStickyElement, elements, onElementsChange, recordSnapshot],
+    [elements, onElementsChange, recordSnapshot],
+  );
+
+  const handleDuplicateElement = React.useCallback(
+    (el: CanvasElement) => {
+      const newId = generateElementId(el.type);
+      const offset = 24;
+      const duplicated = {
+        ...el,
+        id: newId,
+        x: el.x + offset,
+        y: el.y + offset,
+      };
+      const nextElements = [...elements, duplicated];
+      onElementsChange(nextElements);
+      recordSnapshot(nextElements);
+      onSelectElements([newId]);
+    },
+    [elements, onElementsChange, recordSnapshot, onSelectElements],
+  );
+
+  const handleDeleteElement = React.useCallback(
+    (id: string) => {
+      const nextElements = elements.filter((el) => el.id !== id);
+      onElementsChange(nextElements);
+      recordSnapshot(nextElements);
+      onSelectElements([]);
+      if (editingElementId === id) {
+        setEditingElementId(null);
+      }
+    },
+    [
+      elements,
+      onElementsChange,
+      recordSnapshot,
+      onSelectElements,
+      editingElementId,
+      setEditingElementId,
+    ],
   );
 
   if (!isMounted) {
@@ -538,12 +567,14 @@ export function CanvasStage({
         onFinish={handleTextFinish}
       />
 
-      {/* Sticky Note Color Palette Toolbar */}
-      {selectedStickyElement ? (
-        <StickyColorPalette
-          element={selectedStickyElement}
+      {/* Floating Shape Options Toolbar */}
+      {selectedShapeElement ? (
+        <ShapeFloatingToolbar
+          element={selectedShapeElement}
           transform={transform}
-          onColorChange={handleStickyColorChange}
+          onUpdateElement={handleUpdateElement}
+          onDuplicateElement={handleDuplicateElement}
+          onDeleteElement={handleDeleteElement}
         />
       ) : null}
     </div>

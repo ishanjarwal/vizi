@@ -7,6 +7,7 @@ export { CanvasStage } from "./CanvasStage";
 export { CanvasTransformer } from "./CanvasTransformer";
 export { CanvasShapeRenderer } from "./CanvasShapeRenderer";
 export { SelectionMarquee } from "./SelectionMarquee";
+export { ShapeFloatingToolbar } from "./ShapeFloatingToolbar";
 export { StickyColorPalette } from "./StickyColorPalette";
 export { TextEditorOverlay } from "./TextEditorOverlay";
 export { CanvasContainer } from "./CanvasContainer";

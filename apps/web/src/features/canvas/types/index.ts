@@ -229,6 +229,14 @@ export interface StickyColorPaletteProps {
   onColorChange: (color: string) => void;
 }
 
+export interface ShapeFloatingToolbarProps {
+  element: CanvasElement;
+  transform: ViewportTransform;
+  onUpdateElement: (updated: CanvasElement) => void;
+  onDuplicateElement: (element: CanvasElement) => void;
+  onDeleteElement: (id: string) => void;
+}
+
 export interface SelectionMarqueeProps {
   marqueeBox: BoundingBox | null;
 }

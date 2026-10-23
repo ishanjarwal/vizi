@@ -40,6 +40,7 @@ export function CanvasShapeRenderer({
   ) => {
     // Only capture primary button
     if ("button" in e.evt && e.evt.button !== 0) return;
+    if (!isDraggable) return;
     e.cancelBubble = true;
     const shiftKey = "shiftKey" in e.evt ? Boolean(e.evt.shiftKey) : false;
     onSelect(element.id, shiftKey);

@@ -7,7 +7,10 @@ let startPoint: Point | null = null;
 let currentPoints: number[] = [];
 
 export const PenTool: CanvasToolHandler = {
-  onPointerDown(_ctx: ToolContext, _screenPoint: Point, canvasPoint: Point) {
+  onPointerDown(ctx: ToolContext, _screenPoint: Point, canvasPoint: Point) {
+    if (ctx.selectedIds.length > 0) {
+      ctx.setSelectedIds([]);
+    }
     startPoint = canvasPoint;
     currentPoints = [0, 0];
   },
@@ -68,7 +71,6 @@ export const PenTool: CanvasToolHandler = {
 
     const nextElements = [...ctx.elements, newPen];
     ctx.recordSnapshot(nextElements);
-    ctx.setSelectedIds([newPen.id]);
-    ctx.setActiveTool("select");
+    ctx.setSelectedIds([]);
   },
 };

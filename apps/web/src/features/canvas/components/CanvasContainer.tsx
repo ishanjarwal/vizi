@@ -65,6 +65,13 @@ export function CanvasContainer({ className, initialElements = [] }: Props) {
   const [activeTool, setActiveTool] = React.useState<ToolType>(DEFAULT_ACTIVE_TOOL);
   const [editingElementId, setEditingElementId] = React.useState<string | null>(null);
 
+  const handleSelectTool = React.useCallback((tool: ToolType) => {
+    setActiveTool(tool);
+    if (tool !== "select") {
+      setSelectedIds([]);
+    }
+  }, []);
+
   const deleteSelected = React.useCallback(() => {
     if (selectedIds.length === 0 || editingElementId) return;
     setElements((prev) => {
@@ -77,7 +84,7 @@ export function CanvasContainer({ className, initialElements = [] }: Props) {
 
   useKeyboardShortcuts({
     activeTool,
-    setActiveTool,
+    setActiveTool: handleSelectTool,
     deleteSelected,
     undo,
     redo,
@@ -144,7 +151,7 @@ export function CanvasContainer({ className, initialElements = [] }: Props) {
       {/* Top Centered Header Toolbar */}
       <Toolbar
         activeToolId={activeTool}
-        onSelectTool={(tool) => setActiveTool(tool)}
+        onSelectTool={handleSelectTool}
       />
 
       {/* Top Right Menu */}
@@ -176,7 +183,7 @@ export function CanvasContainer({ className, initialElements = [] }: Props) {
           onEditingElementIdChange={setEditingElementId}
           onElementsChange={setElements}
           onSelectElements={setSelectedIds}
-          onSetActiveTool={setActiveTool}
+          onSetActiveTool={handleSelectTool}
           onTransformChange={setTransform}
           recordSnapshot={recordSnapshot}
           panBy={panBy}

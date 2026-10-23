@@ -20,12 +20,16 @@ export function CanvasShapeRenderer({
   isDraggable,
   isPendingDelete = false,
   isEditing = false,
+  theme = "light",
   onDragStart,
   onDragMove,
   onDragEnd,
   onSelect,
   onDoubleClick,
 }: Props) {
+  const isDark = theme === "dark";
+  const defaultTextColor = isDark ? "#f8fafc" : "#1e1e1e";
+  const stickyTextColor = isDark ? "#f8fafc" : "#1e293b";
   const image = useImageLoader(element.type === "image" ? element.src : "");
   const opacity = isPendingDelete
     ? CANVAS_THEME.eraser.pendingDeleteOpacity
@@ -96,7 +100,7 @@ export function CanvasShapeRenderer({
               verticalAlign="middle"
               fontSize={18}
               fontFamily={CANVAS_THEME.fonts.canvas}
-              fill={element.stroke || "#1e1e1e"}
+              fill={element.stroke || defaultTextColor}
               wrap="word"
               padding={6}
             />
@@ -139,7 +143,7 @@ export function CanvasShapeRenderer({
               verticalAlign="middle"
               fontSize={18}
               fontFamily={CANVAS_THEME.fonts.canvas}
-              fill={element.stroke || "#1e1e1e"}
+              fill={element.stroke || defaultTextColor}
               wrap="word"
               padding={6}
             />
@@ -191,7 +195,7 @@ export function CanvasShapeRenderer({
               verticalAlign="middle"
               fontSize={18}
               fontFamily={CANVAS_THEME.fonts.canvas}
-              fill={element.stroke || "#1e1e1e"}
+              fill={element.stroke || defaultTextColor}
               wrap="word"
               padding={8}
             />
@@ -314,7 +318,7 @@ export function CanvasShapeRenderer({
               fontSize={18}
               lineHeight={1.3}
               fontFamily={CANVAS_THEME.fonts.canvas}
-              fill="#1e293b"
+              fill={stickyTextColor}
               wrap="word"
             />
           ) : null}
@@ -331,7 +335,7 @@ export function CanvasShapeRenderer({
           text={element.text || (isEditing ? "" : "Type something...")}
           fontSize={element.fontSize ?? 24}
           fontFamily={element.fontFamily || CANVAS_THEME.fonts.canvas}
-          fill={element.stroke || "#1e1e1e"}
+          fill={element.stroke || defaultTextColor}
           opacity={isEditing ? 0 : opacity}
           draggable={isDraggable}
           onMouseDown={handlePointerDown}

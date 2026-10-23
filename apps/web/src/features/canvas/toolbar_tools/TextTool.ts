@@ -1,4 +1,4 @@
-import { CANVAS_THEME } from "../constants/canvas-theme";
+import { getCanvasTheme } from "../constants/canvas-theme";
 import { generateElementId } from "../utils/helper";
 import type { CanvasToolHandler, ToolContext } from "./types";
 import type { Point, TextElement } from "../types";
@@ -11,6 +11,8 @@ export const TextTool: CanvasToolHandler = {
   onPointerMove() {},
 
   onPointerUp(ctx: ToolContext, _screenPoint: Point, canvasPoint: Point) {
+    const themeConfig = getCanvasTheme(ctx.theme);
+
     const newText: TextElement = {
       type: "text",
       id: generateElementId("text"),
@@ -18,8 +20,8 @@ export const TextTool: CanvasToolHandler = {
       y: canvasPoint.y,
       text: "",
       fontSize: 24,
-      fontFamily: CANVAS_THEME.fonts.canvas,
-      stroke: "#1e1e1e",
+      fontFamily: themeConfig.fonts.canvas,
+      stroke: themeConfig.defaultShape.stroke,
       strokeWidth: 1,
       fill: "transparent",
       opacity: 1,
@@ -27,6 +29,7 @@ export const TextTool: CanvasToolHandler = {
 
     const nextElements = [...ctx.elements, newText];
     ctx.setElements(nextElements);
+    ctx.recordSnapshot(nextElements);
     ctx.setSelectedIds([newText.id]);
     ctx.startEditingElement(newText.id);
     ctx.setActiveTool("select");

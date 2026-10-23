@@ -1,4 +1,4 @@
-import { CANVAS_THEME } from "../constants/canvas-theme";
+import { getCanvasTheme } from "../constants/canvas-theme";
 import { generateElementId } from "../utils/helper";
 import type { CanvasToolHandler, ToolContext } from "./types";
 import type { ArrowElement, Point } from "../types";
@@ -31,16 +31,18 @@ export const ArrowTool: CanvasToolHandler = {
       dy = Math.round(length * Math.sin(snappedAngle));
     }
 
+    const themeConfig = getCanvasTheme(ctx.theme);
+
     const preview: ArrowElement = {
       type: "arrow",
       id: "preview_arrow",
       x: startPoint.x,
       y: startPoint.y,
       points: [0, 0, dx, dy],
-      stroke: CANVAS_THEME.defaultShape.stroke,
-      strokeWidth: CANVAS_THEME.defaultShape.strokeWidth,
-      fill: CANVAS_THEME.defaultShape.stroke,
-      opacity: CANVAS_THEME.defaultShape.opacity,
+      stroke: themeConfig.defaultShape.stroke,
+      strokeWidth: themeConfig.defaultShape.strokeWidth,
+      fill: themeConfig.defaultShape.stroke,
+      opacity: themeConfig.defaultShape.opacity,
     };
 
     ctx.setCreatingElement(preview);
@@ -73,6 +75,8 @@ export const ArrowTool: CanvasToolHandler = {
     startPoint = null;
     ctx.setCreatingElement(null);
 
+    const themeConfig = getCanvasTheme(ctx.theme);
+
     if (length >= 5) {
       const newArrow: ArrowElement = {
         type: "arrow",
@@ -80,10 +84,10 @@ export const ArrowTool: CanvasToolHandler = {
         x: initialX,
         y: initialY,
         points: [0, 0, dx, dy],
-        stroke: CANVAS_THEME.defaultShape.stroke,
-        strokeWidth: CANVAS_THEME.defaultShape.strokeWidth,
-        fill: CANVAS_THEME.defaultShape.stroke,
-        opacity: CANVAS_THEME.defaultShape.opacity,
+        stroke: themeConfig.defaultShape.stroke,
+        strokeWidth: themeConfig.defaultShape.strokeWidth,
+        fill: themeConfig.defaultShape.stroke,
+        opacity: themeConfig.defaultShape.opacity,
       };
 
       const nextElements = [...ctx.elements, newArrow];

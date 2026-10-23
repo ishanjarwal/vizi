@@ -3,7 +3,7 @@
 import type Konva from "konva";
 import * as React from "react";
 import { Layer, Stage } from "react-konva";
-import { CANVAS_THEME } from "../constants/canvas-theme";
+import { CANVAS_THEME, getCanvasTheme } from "../constants/canvas-theme";
 import { getToolHandler } from "../toolbar_tools/ToolManager";
 import type { ToolContext } from "../toolbar_tools/types";
 import type {
@@ -33,6 +33,7 @@ export function CanvasStage({
   recordSnapshot,
   panBy,
   handleWheel: parentHandleWheel,
+  theme = "light",
 }: Props) {
   const isMounted = React.useSyncExternalStore(
     () => () => {},
@@ -138,6 +139,7 @@ export function CanvasStage({
       startEditingElement: (id: string) => setEditingElementId(id),
       activeTool,
       setActiveTool: onSetActiveTool,
+      theme,
     };
   }, [
     elements,
@@ -151,6 +153,7 @@ export function CanvasStage({
     setEditingElementId,
     activeTool,
     onSetActiveTool,
+    theme,
   ]);
 
   const handleWheel = (e: Konva.KonvaEventObject<WheelEvent>) => {
@@ -282,7 +285,7 @@ export function CanvasStage({
         text: "",
         fontSize: 24,
         fontFamily: CANVAS_THEME.fonts.canvas,
-        stroke: "#1e1e1e",
+        stroke: getCanvasTheme(theme).defaultShape.stroke,
         strokeWidth: 1,
         fill: "transparent",
         opacity: 1,
@@ -523,6 +526,7 @@ export function CanvasStage({
               isDraggable={activeTool === "select" && !editingElementId}
               isPendingDelete={pendingDeleteIds.includes(el.id)}
               isEditing={editingElementId === el.id}
+              theme={theme}
               onDragStart={handleShapeDragStart}
               onDragMove={handleShapeDragMove}
               onDragEnd={handleShapeDragEnd}
@@ -537,6 +541,7 @@ export function CanvasStage({
               element={creatingElement}
               isSelected={false}
               isDraggable={false}
+              theme={theme}
               onDragEnd={() => {}}
               onSelect={() => {}}
               onDoubleClick={() => {}}
@@ -544,7 +549,7 @@ export function CanvasStage({
           ) : null}
 
           {/* Selection Marquee */}
-          <SelectionMarquee marqueeBox={marqueeBox} />
+          <SelectionMarquee marqueeBox={marqueeBox} theme={theme} />
 
           {/* Transformer (only when NOT editing text) */}
           {activeTool === "select" && !editingElementId ? (
@@ -553,6 +558,7 @@ export function CanvasStage({
               elements={elements}
               onElementsChange={onElementsChange}
               recordSnapshot={recordSnapshot}
+              theme={theme}
             />
           ) : null}
         </Layer>
@@ -563,6 +569,7 @@ export function CanvasStage({
         key={editingElement?.id ?? "none"}
         element={editingElement}
         transform={transform}
+        theme={theme}
         onChangeText={handleTextChange}
         onFinish={handleTextFinish}
       />
@@ -572,6 +579,7 @@ export function CanvasStage({
         <ShapeFloatingToolbar
           element={selectedShapeElement}
           transform={transform}
+          theme={theme}
           onUpdateElement={handleUpdateElement}
           onDuplicateElement={handleDuplicateElement}
           onDeleteElement={handleDeleteElement}

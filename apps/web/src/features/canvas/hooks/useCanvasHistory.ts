@@ -13,6 +13,7 @@ export interface UseCanvasHistoryReturn {
   canRedo: boolean;
   recordSnapshot: (nextElements?: CanvasElement[]) => void;
   clearHistory: (initialElements?: CanvasElement[]) => void;
+  mapHistoryElements: (mapper: (el: CanvasElement) => CanvasElement) => void;
 }
 
 export function useCanvasHistory(
@@ -99,6 +100,17 @@ export function useCanvasHistory(
     });
   }, []);
 
+  const mapHistoryElements = useCallback(
+    (mapper: (el: CanvasElement) => CanvasElement) => {
+      setHistory((prev) => ({
+        past: prev.past.map((step) => step.map(mapper)),
+        present: prev.present.map(mapper),
+        future: prev.future.map((step) => step.map(mapper)),
+      }));
+    },
+    [],
+  );
+
   return {
     elements,
     setElements,
@@ -108,5 +120,6 @@ export function useCanvasHistory(
     canRedo,
     recordSnapshot,
     clearHistory,
+    mapHistoryElements,
   };
 }

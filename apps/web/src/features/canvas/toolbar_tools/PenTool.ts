@@ -1,4 +1,4 @@
-import { CANVAS_THEME } from "../constants/canvas-theme";
+import { getCanvasTheme } from "../constants/canvas-theme";
 import { generateElementId } from "../utils/helper";
 import type { CanvasToolHandler, ToolContext } from "./types";
 import type { PenElement, Point } from "../types";
@@ -19,16 +19,18 @@ export const PenTool: CanvasToolHandler = {
     const dy = canvasPoint.y - startPoint.y;
     currentPoints.push(dx, dy);
 
+    const themeConfig = getCanvasTheme(ctx.theme);
+
     const preview: PenElement = {
       type: "pen",
       id: "preview_pen",
       x: startPoint.x,
       y: startPoint.y,
       points: [...currentPoints],
-      stroke: CANVAS_THEME.defaultShape.stroke,
-      strokeWidth: CANVAS_THEME.defaultShape.strokeWidth,
+      stroke: themeConfig.defaultShape.stroke,
+      strokeWidth: themeConfig.defaultShape.strokeWidth,
       fill: "transparent",
-      opacity: CANVAS_THEME.defaultShape.opacity,
+      opacity: themeConfig.defaultShape.opacity,
     };
 
     ctx.setCreatingElement(preview);
@@ -50,16 +52,18 @@ export const PenTool: CanvasToolHandler = {
     currentPoints = [];
     ctx.setCreatingElement(null);
 
+    const themeConfig = getCanvasTheme(ctx.theme);
+
     const newPen: PenElement = {
       type: "pen",
       id: generateElementId("pen"),
       x: initialX,
       y: initialY,
       points: finalPoints,
-      stroke: CANVAS_THEME.defaultShape.stroke,
-      strokeWidth: CANVAS_THEME.defaultShape.strokeWidth,
+      stroke: themeConfig.defaultShape.stroke,
+      strokeWidth: themeConfig.defaultShape.strokeWidth,
       fill: "transparent",
-      opacity: CANVAS_THEME.defaultShape.opacity,
+      opacity: themeConfig.defaultShape.opacity,
     };
 
     const nextElements = [...ctx.elements, newPen];

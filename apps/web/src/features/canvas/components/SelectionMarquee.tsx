@@ -2,13 +2,15 @@
 
 import * as React from "react";
 import { Rect } from "react-konva";
-import { CANVAS_THEME } from "../constants/canvas-theme";
+import { getCanvasTheme } from "../constants/canvas-theme";
 import type { SelectionMarqueeProps as Props } from "../types";
 
-export function SelectionMarquee({ marqueeBox }: Props) {
+export function SelectionMarquee({ marqueeBox, theme = "light" }: Props) {
   if (!marqueeBox || (marqueeBox.width === 0 && marqueeBox.height === 0)) {
     return null;
   }
+
+  const themeConfig = getCanvasTheme(theme);
 
   return (
     <Rect
@@ -16,10 +18,10 @@ export function SelectionMarquee({ marqueeBox }: Props) {
       y={marqueeBox.y}
       width={marqueeBox.width}
       height={marqueeBox.height}
-      stroke={CANVAS_THEME.marquee.stroke}
-      strokeWidth={CANVAS_THEME.marquee.strokeWidth}
-      fill={CANVAS_THEME.marquee.fill}
-      dash={CANVAS_THEME.marquee.dash as unknown as number[]}
+      stroke={themeConfig.marquee.stroke}
+      strokeWidth={themeConfig.marquee.strokeWidth}
+      fill={themeConfig.marquee.fill}
+      dash={themeConfig.marquee.dash as unknown as number[]}
       listening={false}
     />
   );

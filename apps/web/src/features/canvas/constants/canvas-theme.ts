@@ -1,6 +1,6 @@
-export const CANVAS_THEME = {
+export const CANVAS_LIGHT_THEME = {
   transformer: {
-    borderStroke: "#e11d48", // Rose-600 / primary accent
+    borderStroke: "#e11d48", // Rose-600
     borderDash: [4, 4],
     anchorStroke: "#e11d48",
     anchorFill: "#ffffff",
@@ -28,6 +28,7 @@ export const CANVAS_THEME = {
   stickyNote: {
     defaultColor: "#fef08a", // Warm vibrant pastel yellow
     cornerRadius: 8,
+    textColor: "#1e293b",
     colors: [
       { name: "Yellow", value: "#fef08a" },
       { name: "Pink", value: "#fbcfe8" },
@@ -82,3 +83,95 @@ export const CANVAS_THEME = {
     ],
   },
 } as const;
+
+export const CANVAS_DARK_THEME = {
+  transformer: {
+    borderStroke: "#fb7185", // Rose-400 (bright contrast on dark)
+    borderDash: [4, 4],
+    anchorStroke: "#fb7185",
+    anchorFill: "#1e1e24",
+    anchorSize: 9,
+    anchorCornerRadius: 4,
+  },
+  marquee: {
+    stroke: "#fb7185",
+    fill: "rgba(251, 113, 133, 0.12)",
+    strokeWidth: 1,
+    dash: [4, 4],
+  },
+  defaultShape: {
+    stroke: "#f8fafc", // Light crisp contrast slate
+    strokeWidth: 2,
+    fill: "#3b1d28", // Deep muted rose background
+    cornerRadius: 12,
+    opacity: 1,
+  },
+  eraser: {
+    pendingDeleteOpacity: 0.25,
+    trailStroke: "rgba(244, 63, 94, 0.4)",
+    trailWidth: 16,
+  },
+  stickyNote: {
+    defaultColor: "#713f12", // Rich deep amber/yellow
+    cornerRadius: 8,
+    textColor: "#f8fafc",
+    colors: [
+      { name: "Yellow", value: "#713f12" },
+      { name: "Pink", value: "#831843" },
+      { name: "Green", value: "#14532d" },
+      { name: "Blue", value: "#1e3a8a" },
+      { name: "Purple", value: "#581c87" },
+      { name: "Orange", value: "#7c2d12" },
+    ],
+  },
+  fonts: {
+    canvas: "'Instrument Serif', 'Instrument Serif Fallback', Georgia, serif",
+    sans: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+    mono: "'Fira Code', 'Courier New', monospace",
+  },
+  zoom: {
+    min: 0.1,
+    max: 5.0,
+    step: 0.1,
+    default: 1.0,
+  },
+  history: {
+    maxDepth: 50,
+  },
+  palette: {
+    fills: [
+      { name: "Transparent", value: "transparent" },
+      { name: "Rose", value: "#3b1d28" },
+      { name: "Yellow", value: "#453310" },
+      { name: "Green", value: "#143d22" },
+      { name: "Blue", value: "#172e4c" },
+      { name: "Purple", value: "#331b4d" },
+      { name: "Orange", value: "#4a2211" },
+    ],
+    strokes: [
+      { name: "White", value: "#f8fafc" },
+      { name: "Rose", value: "#fb7185" },
+      { name: "Blue", value: "#60a5fa" },
+      { name: "Green", value: "#4ade80" },
+      { name: "Amber", value: "#fbbf24" },
+      { name: "Purple", value: "#c084fc" },
+    ],
+    strokeWidths: [
+      { label: "Thin", value: 1 },
+      { label: "Medium", value: 2 },
+      { label: "Thick", value: 4 },
+    ],
+    fontSizes: [
+      { label: "S", value: 18 },
+      { label: "M", value: 24 },
+      { label: "L", value: 36 },
+      { label: "XL", value: 48 },
+    ],
+  },
+} as const;
+
+export function getCanvasTheme(theme: "light" | "dark" = "light") {
+  return theme === "dark" ? CANVAS_DARK_THEME : CANVAS_LIGHT_THEME;
+}
+
+export const CANVAS_THEME = CANVAS_LIGHT_THEME;

@@ -1,4 +1,4 @@
-import { CANVAS_THEME } from "../constants/canvas-theme";
+import { getCanvasTheme } from "../constants/canvas-theme";
 import { generateElementId } from "../utils/helper";
 import type { CanvasToolHandler, ToolContext } from "./types";
 import type { EllipseElement, Point } from "../types";
@@ -33,6 +33,8 @@ export const EllipseTool: CanvasToolHandler = {
     const x = startPoint.x + signX * radiusX;
     const y = startPoint.y + signY * radiusY;
 
+    const themeConfig = getCanvasTheme(ctx.theme);
+
     const preview: EllipseElement = {
       type: "ellipse",
       id: "preview_ellipse",
@@ -40,10 +42,10 @@ export const EllipseTool: CanvasToolHandler = {
       y,
       radiusX,
       radiusY,
-      stroke: CANVAS_THEME.defaultShape.stroke,
-      strokeWidth: CANVAS_THEME.defaultShape.strokeWidth,
-      fill: CANVAS_THEME.defaultShape.fill,
-      opacity: CANVAS_THEME.defaultShape.opacity,
+      stroke: themeConfig.defaultShape.stroke,
+      strokeWidth: themeConfig.defaultShape.strokeWidth,
+      fill: themeConfig.defaultShape.fill,
+      opacity: themeConfig.defaultShape.opacity,
     };
 
     ctx.setCreatingElement(preview);
@@ -75,6 +77,8 @@ export const EllipseTool: CanvasToolHandler = {
     startPoint = null;
     ctx.setCreatingElement(null);
 
+    const themeConfig = getCanvasTheme(ctx.theme);
+
     if (radiusX >= 2 && radiusY >= 2) {
       const newEllipse: EllipseElement = {
         type: "ellipse",
@@ -83,10 +87,10 @@ export const EllipseTool: CanvasToolHandler = {
         y,
         radiusX,
         radiusY,
-        stroke: CANVAS_THEME.defaultShape.stroke,
-        strokeWidth: CANVAS_THEME.defaultShape.strokeWidth,
-        fill: CANVAS_THEME.defaultShape.fill,
-        opacity: CANVAS_THEME.defaultShape.opacity,
+        stroke: themeConfig.defaultShape.stroke,
+        strokeWidth: themeConfig.defaultShape.strokeWidth,
+        fill: themeConfig.defaultShape.fill,
+        opacity: themeConfig.defaultShape.opacity,
       };
 
       const nextElements = [...ctx.elements, newEllipse];

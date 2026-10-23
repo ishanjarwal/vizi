@@ -1,4 +1,4 @@
-import { CANVAS_THEME } from "../constants/canvas-theme";
+import { getCanvasTheme } from "../constants/canvas-theme";
 import { generateElementId } from "../utils/helper";
 import type { CanvasToolHandler, ToolContext } from "./types";
 import type { DiamondElement, Point } from "../types";
@@ -31,6 +31,8 @@ export const DiamondTool: CanvasToolHandler = {
     const x = canvasPoint.x >= startPoint.x ? startPoint.x : startPoint.x - width;
     const y = canvasPoint.y >= startPoint.y ? startPoint.y : startPoint.y - height;
 
+    const themeConfig = getCanvasTheme(ctx.theme);
+
     const preview: DiamondElement = {
       type: "diamond",
       id: "preview_diamond",
@@ -38,10 +40,10 @@ export const DiamondTool: CanvasToolHandler = {
       y,
       width,
       height,
-      stroke: CANVAS_THEME.defaultShape.stroke,
-      strokeWidth: CANVAS_THEME.defaultShape.strokeWidth,
-      fill: CANVAS_THEME.defaultShape.fill,
-      opacity: CANVAS_THEME.defaultShape.opacity,
+      stroke: themeConfig.defaultShape.stroke,
+      strokeWidth: themeConfig.defaultShape.strokeWidth,
+      fill: themeConfig.defaultShape.fill,
+      opacity: themeConfig.defaultShape.opacity,
     };
 
     ctx.setCreatingElement(preview);
@@ -71,6 +73,8 @@ export const DiamondTool: CanvasToolHandler = {
     startPoint = null;
     ctx.setCreatingElement(null);
 
+    const themeConfig = getCanvasTheme(ctx.theme);
+
     if (width >= 4 && height >= 4) {
       const newDiamond: DiamondElement = {
         type: "diamond",
@@ -79,10 +83,10 @@ export const DiamondTool: CanvasToolHandler = {
         y,
         width,
         height,
-        stroke: CANVAS_THEME.defaultShape.stroke,
-        strokeWidth: CANVAS_THEME.defaultShape.strokeWidth,
-        fill: CANVAS_THEME.defaultShape.fill,
-        opacity: CANVAS_THEME.defaultShape.opacity,
+        stroke: themeConfig.defaultShape.stroke,
+        strokeWidth: themeConfig.defaultShape.strokeWidth,
+        fill: themeConfig.defaultShape.fill,
+        opacity: themeConfig.defaultShape.opacity,
       };
 
       const nextElements = [...ctx.elements, newDiamond];

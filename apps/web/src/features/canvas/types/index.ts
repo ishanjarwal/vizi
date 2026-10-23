@@ -207,6 +207,7 @@ export interface CanvasStageProps {
     ctrlKey: boolean,
     pointerPos: Point | null,
   ) => void;
+  theme?: "light" | "dark";
 }
 
 export interface CanvasTransformerProps {
@@ -214,6 +215,7 @@ export interface CanvasTransformerProps {
   elements: CanvasElement[];
   onElementsChange: (elements: CanvasElement[]) => void;
   recordSnapshot: (nextElements?: CanvasElement[]) => void;
+  theme?: "light" | "dark";
 }
 
 export interface TextEditorOverlayProps {
@@ -221,6 +223,7 @@ export interface TextEditorOverlayProps {
   transform: ViewportTransform;
   onChangeText: (text: string) => void;
   onFinish: () => void;
+  theme?: "light" | "dark";
 }
 
 export interface StickyColorPaletteProps {
@@ -235,10 +238,12 @@ export interface ShapeFloatingToolbarProps {
   onUpdateElement: (updated: CanvasElement) => void;
   onDuplicateElement: (element: CanvasElement) => void;
   onDeleteElement: (id: string) => void;
+  theme?: "light" | "dark";
 }
 
 export interface SelectionMarqueeProps {
   marqueeBox: BoundingBox | null;
+  theme?: "light" | "dark";
 }
 
 export interface CanvasShapeRendererProps {
@@ -247,6 +252,7 @@ export interface CanvasShapeRendererProps {
   isDraggable: boolean;
   isPendingDelete?: boolean;
   isEditing?: boolean;
+  theme?: "light" | "dark";
   onDragStart?: (id: string, x: number, y: number) => void;
   onDragMove?: (id: string, x: number, y: number) => void;
   onDragEnd: (id: string, x: number, y: number) => void;

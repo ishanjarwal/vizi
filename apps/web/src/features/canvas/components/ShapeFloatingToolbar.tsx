@@ -3,7 +3,7 @@
 import * as React from "react";
 import { Copy, PaintBucket, PenLine, Trash2 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
-import { CANVAS_THEME } from "../constants/canvas-theme";
+import { getCanvasTheme } from "../constants/canvas-theme";
 import type { ShapeFloatingToolbarProps as Props } from "../types";
 import { getElementBoundingBox } from "../utils/helper";
 
@@ -13,7 +13,10 @@ export function ShapeFloatingToolbar({
   onUpdateElement,
   onDuplicateElement,
   onDeleteElement,
+  theme = "light",
 }: Props) {
+  const themeConfig = getCanvasTheme(theme);
+
   const hasFill =
     element.type === "rectangle" ||
     element.type === "ellipse" ||
@@ -107,7 +110,7 @@ export function ShapeFloatingToolbar({
               <PaintBucket className="size-3" /> Fill
             </span>
             <div className="flex items-center gap-1">
-              {CANVAS_THEME.palette.fills.map((f) => {
+              {themeConfig.palette.fills.map((f) => {
                 const isSelected =
                   currentFill.toLowerCase() === f.value.toLowerCase();
                 return (
@@ -149,7 +152,7 @@ export function ShapeFloatingToolbar({
               <PenLine className="size-3" /> Stroke
             </span>
             <div className="flex items-center gap-1">
-              {CANVAS_THEME.palette.strokes.map((s) => {
+              {themeConfig.palette.strokes.map((s) => {
                 const isSelected =
                   currentStroke.toLowerCase() === s.value.toLowerCase();
                 return (
@@ -182,11 +185,11 @@ export function ShapeFloatingToolbar({
               Note Color
             </span>
             <div className="flex items-center gap-1.5">
-              {CANVAS_THEME.stickyNote.colors.map((c) => {
+              {themeConfig.stickyNote.colors.map((c) => {
                 const currentColor =
                   element.colorScheme ||
                   element.fill ||
-                  CANVAS_THEME.stickyNote.defaultColor;
+                  themeConfig.stickyNote.defaultColor;
                 const isSelected =
                   currentColor.toLowerCase() === c.value.toLowerCase();
                 return (
@@ -219,7 +222,7 @@ export function ShapeFloatingToolbar({
               Color
             </span>
             <div className="flex items-center gap-1">
-              {CANVAS_THEME.palette.strokes.map((s) => {
+              {themeConfig.palette.strokes.map((s) => {
                 const isSelected =
                   currentStroke.toLowerCase() === s.value.toLowerCase();
                 return (
@@ -248,7 +251,7 @@ export function ShapeFloatingToolbar({
         {/* NEXT ROW: Stroke Width (occupying the whole width with 3 buttons) */}
         {hasStrokeWidth ? (
           <div className="grid w-full grid-cols-3 gap-1 rounded-lg bg-muted/60 p-0.5">
-            {CANVAS_THEME.palette.strokeWidths.map((sw) => {
+            {themeConfig.palette.strokeWidths.map((sw) => {
               const isSelected = currentStrokeWidth === sw.value;
               return (
                 <button
@@ -282,7 +285,7 @@ export function ShapeFloatingToolbar({
         {/* ROW (for text): Font Size (occupying the whole width with 4 buttons) */}
         {isText ? (
           <div className="grid w-full grid-cols-4 gap-1 rounded-lg bg-muted/60 p-0.5">
-            {CANVAS_THEME.palette.fontSizes.map((fs) => {
+            {themeConfig.palette.fontSizes.map((fs) => {
               const isSelected = currentFontSize === fs.value;
               return (
                 <button

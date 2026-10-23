@@ -23,6 +23,7 @@ export interface ToolContext {
   startEditingElement: (id: string) => void;
   activeTool: ToolType;
   setActiveTool: (tool: ToolType) => void;
+  theme: "light" | "dark";
 }
 
 export interface CanvasToolHandler {

@@ -3,7 +3,7 @@
 import type Konva from "konva";
 import * as React from "react";
 import { Circle, Group, Transformer } from "react-konva";
-import { CANVAS_THEME } from "../constants/canvas-theme";
+import { getCanvasTheme } from "../constants/canvas-theme";
 import type {
   ArrowElement,
   CanvasTransformerProps as Props,
@@ -15,8 +15,10 @@ export function CanvasTransformer({
   elements,
   onElementsChange,
   recordSnapshot,
+  theme = "light",
 }: Props) {
   const trRef = React.useRef<Konva.Transformer>(null);
+  const themeConfig = getCanvasTheme(theme);
 
   const selectedElements = React.useMemo(() => {
     return elements.filter((el) => selectedIds.includes(el.id));
@@ -157,9 +159,9 @@ export function CanvasTransformer({
             name="_anchor"
             x={p1.x}
             y={p1.y}
-            radius={CANVAS_THEME.transformer.anchorSize / 2}
-            fill={CANVAS_THEME.transformer.anchorFill}
-            stroke={CANVAS_THEME.transformer.anchorStroke}
+            radius={themeConfig.transformer.anchorSize / 2}
+            fill={themeConfig.transformer.anchorFill}
+            stroke={themeConfig.transformer.anchorStroke}
             strokeWidth={1.5}
             draggable
             onDragMove={(e) => {
@@ -192,9 +194,9 @@ export function CanvasTransformer({
             name="_anchor"
             x={p2.x}
             y={p2.y}
-            radius={CANVAS_THEME.transformer.anchorSize / 2}
-            fill={CANVAS_THEME.transformer.anchorFill}
-            stroke={CANVAS_THEME.transformer.anchorStroke}
+            radius={themeConfig.transformer.anchorSize / 2}
+            fill={themeConfig.transformer.anchorFill}
+            stroke={themeConfig.transformer.anchorStroke}
             strokeWidth={1.5}
             draggable
             onDragMove={(e) => {
@@ -252,13 +254,13 @@ export function CanvasTransformer({
       enabledAnchors={enabledAnchors}
       keepRatio={hasTextOrImage}
       ignoreStroke={true}
-      borderStroke={CANVAS_THEME.transformer.borderStroke}
-      borderDash={CANVAS_THEME.transformer.borderDash as unknown as number[]}
+      borderStroke={themeConfig.transformer.borderStroke}
+      borderDash={themeConfig.transformer.borderDash as unknown as number[]}
       borderStrokeWidth={1.5}
-      anchorStroke={CANVAS_THEME.transformer.anchorStroke}
-      anchorFill={CANVAS_THEME.transformer.anchorFill}
-      anchorSize={CANVAS_THEME.transformer.anchorSize}
-      anchorCornerRadius={CANVAS_THEME.transformer.anchorCornerRadius}
+      anchorStroke={themeConfig.transformer.anchorStroke}
+      anchorFill={themeConfig.transformer.anchorFill}
+      anchorSize={themeConfig.transformer.anchorSize}
+      anchorCornerRadius={themeConfig.transformer.anchorCornerRadius}
       onTransformEnd={handleTransformEnd}
     />
   );

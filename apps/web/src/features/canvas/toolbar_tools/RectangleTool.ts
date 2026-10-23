@@ -1,4 +1,4 @@
-import { CANVAS_THEME } from "../constants/canvas-theme";
+import { getCanvasTheme } from "../constants/canvas-theme";
 import { generateElementId } from "../utils/helper";
 import type { CanvasToolHandler, ToolContext } from "./types";
 import type { Point, RectangleElement } from "../types";
@@ -31,6 +31,8 @@ export const RectangleTool: CanvasToolHandler = {
     const x = canvasPoint.x >= startPoint.x ? startPoint.x : startPoint.x - width;
     const y = canvasPoint.y >= startPoint.y ? startPoint.y : startPoint.y - height;
 
+    const themeConfig = getCanvasTheme(ctx.theme);
+
     const preview: RectangleElement = {
       type: "rectangle",
       id: "preview_rect",
@@ -38,11 +40,11 @@ export const RectangleTool: CanvasToolHandler = {
       y,
       width,
       height,
-      cornerRadius: CANVAS_THEME.defaultShape.cornerRadius,
-      stroke: CANVAS_THEME.defaultShape.stroke,
-      strokeWidth: CANVAS_THEME.defaultShape.strokeWidth,
-      fill: CANVAS_THEME.defaultShape.fill,
-      opacity: CANVAS_THEME.defaultShape.opacity,
+      cornerRadius: themeConfig.defaultShape.cornerRadius,
+      stroke: themeConfig.defaultShape.stroke,
+      strokeWidth: themeConfig.defaultShape.strokeWidth,
+      fill: themeConfig.defaultShape.fill,
+      opacity: themeConfig.defaultShape.opacity,
     };
 
     ctx.setCreatingElement(preview);
@@ -72,6 +74,8 @@ export const RectangleTool: CanvasToolHandler = {
     startPoint = null;
     ctx.setCreatingElement(null);
 
+    const themeConfig = getCanvasTheme(ctx.theme);
+
     if (width >= 4 && height >= 4) {
       const newRect: RectangleElement = {
         type: "rectangle",
@@ -80,11 +84,11 @@ export const RectangleTool: CanvasToolHandler = {
         y,
         width,
         height,
-        cornerRadius: CANVAS_THEME.defaultShape.cornerRadius,
-        stroke: CANVAS_THEME.defaultShape.stroke,
-        strokeWidth: CANVAS_THEME.defaultShape.strokeWidth,
-        fill: CANVAS_THEME.defaultShape.fill,
-        opacity: CANVAS_THEME.defaultShape.opacity,
+        cornerRadius: themeConfig.defaultShape.cornerRadius,
+        stroke: themeConfig.defaultShape.stroke,
+        strokeWidth: themeConfig.defaultShape.strokeWidth,
+        fill: themeConfig.defaultShape.fill,
+        opacity: themeConfig.defaultShape.opacity,
       };
 
       const nextElements = [...ctx.elements, newRect];

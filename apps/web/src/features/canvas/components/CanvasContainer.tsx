@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useTheme } from "next-themes";
 import { cn } from "@/shared/lib/utils";
 import { DEFAULT_ACTIVE_TOOL } from "../constants";
 import { useCanvasHistory } from "../hooks/useCanvasHistory";
@@ -11,6 +12,7 @@ import type {
   CanvasElement,
   ToolType,
 } from "../types";
+import { convertElementTheme } from "../utils";
 import { BottomLeftOptions } from "./BottomLeftOptions";
 import { CanvasStage } from "./CanvasStage";
 import { EmptyCard } from "./EmptyCard";
@@ -28,6 +30,7 @@ export function CanvasContainer({ className, initialElements = [] }: Props) {
     canRedo,
     recordSnapshot,
     clearHistory,
+    mapHistoryElements,
   } = useCanvasHistory(initialElements);
 
   const {
@@ -39,6 +42,24 @@ export function CanvasContainer({ className, initialElements = [] }: Props) {
     zoomOut,
     resetZoom,
   } = useCanvasTransform();
+
+  const { resolvedTheme } = useTheme();
+  const mounted = React.useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
+  const currentTheme: "light" | "dark" =
+    mounted && resolvedTheme === "dark" ? "dark" : "light";
+  const prevThemeRef = React.useRef<"light" | "dark">(currentTheme);
+
+  React.useEffect(() => {
+    if (!mounted) return;
+    if (prevThemeRef.current !== currentTheme) {
+      prevThemeRef.current = currentTheme;
+      mapHistoryElements((el) => convertElementTheme(el, currentTheme));
+    }
+  }, [currentTheme, mounted, mapHistoryElements]);
 
   const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
   const [activeTool, setActiveTool] = React.useState<ToolType>(DEFAULT_ACTIVE_TOOL);
@@ -160,6 +181,7 @@ export function CanvasContainer({ className, initialElements = [] }: Props) {
           recordSnapshot={recordSnapshot}
           panBy={panBy}
           handleWheel={handleWheel}
+          theme={currentTheme}
         />
       </div>
     </div>

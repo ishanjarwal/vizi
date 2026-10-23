@@ -1,4 +1,4 @@
-import { CANVAS_THEME } from "../constants/canvas-theme";
+import { getCanvasTheme } from "../constants/canvas-theme";
 import { generateElementId } from "../utils/helper";
 import type { CanvasToolHandler, ToolContext } from "./types";
 import type { Point, StickyElement } from "../types";
@@ -18,6 +18,8 @@ export const StickyNoteTool: CanvasToolHandler = {
     const width = Math.max(Math.abs(canvasPoint.x - startPoint.x), 40);
     const height = Math.max(Math.abs(canvasPoint.y - startPoint.y), 40);
 
+    const themeConfig = getCanvasTheme(ctx.theme);
+
     const preview: StickyElement = {
       type: "sticky",
       id: "preview_sticky",
@@ -25,11 +27,11 @@ export const StickyNoteTool: CanvasToolHandler = {
       y,
       width,
       height,
-      cornerRadius: CANVAS_THEME.stickyNote.cornerRadius,
-      colorScheme: CANVAS_THEME.stickyNote.defaultColor,
-      stroke: "rgba(0,0,0,0.06)",
+      cornerRadius: themeConfig.stickyNote.cornerRadius,
+      colorScheme: themeConfig.stickyNote.defaultColor,
+      stroke: ctx.theme === "dark" ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)",
       strokeWidth: 1,
-      fill: CANVAS_THEME.stickyNote.defaultColor,
+      fill: themeConfig.stickyNote.defaultColor,
       opacity: 1,
     };
 
@@ -50,6 +52,8 @@ export const StickyNoteTool: CanvasToolHandler = {
     startPoint = null;
     ctx.setCreatingElement(null);
 
+    const themeConfig = getCanvasTheme(ctx.theme);
+
     const newSticky: StickyElement = {
       type: "sticky",
       id: generateElementId("sticky"),
@@ -57,11 +61,11 @@ export const StickyNoteTool: CanvasToolHandler = {
       y,
       width,
       height,
-      cornerRadius: CANVAS_THEME.stickyNote.cornerRadius,
-      colorScheme: CANVAS_THEME.stickyNote.defaultColor,
-      stroke: "rgba(0,0,0,0.06)",
+      cornerRadius: themeConfig.stickyNote.cornerRadius,
+      colorScheme: themeConfig.stickyNote.defaultColor,
+      stroke: ctx.theme === "dark" ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)",
       strokeWidth: 1,
-      fill: CANVAS_THEME.stickyNote.defaultColor,
+      fill: themeConfig.stickyNote.defaultColor,
       opacity: 1,
       text: "",
     };

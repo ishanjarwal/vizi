@@ -9,6 +9,7 @@ export function TextEditorOverlay({
   transform,
   onChangeText,
   onFinish,
+  theme = "light",
 }: Props) {
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
   const [text, setText] = React.useState(element?.text ?? "");
@@ -105,8 +106,11 @@ export function TextEditorOverlay({
       break;
   }
 
+  const isDark = theme === "dark";
   const isSticky = element.type === "sticky";
-  const textColor = isSticky ? "#1e293b" : (element.stroke || "#1e1e1e");
+  const defaultText = isDark ? "#f8fafc" : "#1e1e1e";
+  const stickyText = isDark ? "#f8fafc" : "#1e293b";
+  const textColor = isSticky ? stickyText : (element.stroke || defaultText);
   const scaledFontSize = Math.max(12, Math.round(fontSize));
   const containerAlignment = isCentered
     ? "items-center justify-center"

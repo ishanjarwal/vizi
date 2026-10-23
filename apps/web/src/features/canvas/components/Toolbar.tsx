@@ -16,6 +16,7 @@ import type { ToolbarProps as Props, ToolItem } from "../types";
 export function Toolbar({
   className,
   activeToolId = DEFAULT_ACTIVE_TOOL,
+  onSelectTool,
 }: Props) {
   const navigationTools = TOOL_ITEMS.filter(
     (tool: ToolItem) => tool.group === "navigation",
@@ -50,6 +51,7 @@ export function Toolbar({
                     type="button"
                     variant="ghost"
                     size="icon-sm"
+                    onClick={() => onSelectTool?.(tool.id)}
                     aria-label={`${tool.label} (${tool.shortcut})`}
                     className={cn(
                       "relative size-9 rounded-lg transition-colors",
@@ -87,6 +89,7 @@ export function Toolbar({
                     type="button"
                     variant="ghost"
                     size="icon-sm"
+                    onClick={() => onSelectTool?.(tool.id)}
                     aria-label={`${tool.label} (${tool.shortcut})`}
                     className={cn(
                       "relative size-9 rounded-lg transition-colors",
@@ -124,6 +127,7 @@ export function Toolbar({
                     type="button"
                     variant="ghost"
                     size="icon-sm"
+                    onClick={() => onSelectTool?.(tool.id)}
                     aria-label={`${tool.label} (${tool.shortcut})`}
                     className={cn(
                       "relative size-9 rounded-lg transition-colors",

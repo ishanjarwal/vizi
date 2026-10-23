@@ -18,7 +18,51 @@ import { TOP_MENU_ITEMS } from "../constants";
 import type { MenuItem, TopMenuProps as Props } from "../types";
 import { Kbd, KbdGroup } from "@/shared/components/shadcn/kbd";
 
-export function TopLeftMenu({ className }: Props) {
+export function TopLeftMenu({
+  className,
+  onResetCanvas,
+  onExportJson,
+  onImportJson,
+  onExportImage,
+}: Props) {
+  const handleItemClick = (id: string) => {
+    switch (id) {
+      case "reset":
+        onResetCanvas?.();
+        break;
+      case "save":
+        onExportJson?.();
+        break;
+      case "open": {
+        if (typeof document === "undefined") break;
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = ".json,application/json";
+        input.onchange = (e) => {
+          const file = (e.target as HTMLInputElement).files?.[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = (re) => {
+            try {
+              const parsed = JSON.parse(re.target?.result as string);
+              if (Array.isArray(parsed)) {
+                onImportJson?.(parsed);
+              }
+            } catch {
+              // ignore invalid JSON
+            }
+          };
+          reader.readAsText(file);
+        };
+        input.click();
+        break;
+      }
+      case "export-image":
+        onExportImage?.();
+        break;
+    }
+  };
+
   return (
     <div className={cn("fixed top-3 left-3 z-40 select-none", className)}>
       <DropdownMenu>
@@ -52,6 +96,7 @@ export function TopLeftMenu({ className }: Props) {
             return (
               <React.Fragment key={item.id}>
                 <DropdownMenuItem
+                  onClick={() => handleItemClick(item.id)}
                   className={cn(
                     "cursor-pointer gap-2 rounded-lg px-2.5 py-2 font-medium",
                     item.isDestructive

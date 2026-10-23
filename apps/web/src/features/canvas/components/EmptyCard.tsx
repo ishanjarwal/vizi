@@ -9,13 +9,8 @@ import { cn } from "@/shared/lib/utils";
 import Image from "next/image";
 import type { EmptyCardProps as Props } from "../types";
 
-export const EMPTY_CANVAS_TIPS = [
-  { label: "Rectangle", shortcut: "R" },
-  { label: "Pen", shortcut: "P" },
-  { label: "Text", shortcut: "T" },
-] as const;
-
-export function EmptyCard({ className }: Props) {
+export function EmptyCard({ className, isVisible = true }: Props) {
+  if (!isVisible) return null;
   return (
     <div
       className={cn(

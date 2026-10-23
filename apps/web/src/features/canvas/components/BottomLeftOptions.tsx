@@ -18,6 +18,11 @@ export function BottomLeftOptions({
   zoom = DEFAULT_ZOOM_PERCENT,
   canUndo = true,
   canRedo = true,
+  onZoomIn,
+  onZoomOut,
+  onResetZoom,
+  onUndo,
+  onRedo,
 }: Props) {
   return (
     <aside
@@ -33,6 +38,7 @@ export function BottomLeftOptions({
                 type="button"
                 variant="ghost"
                 size="icon-sm"
+                onClick={onZoomOut}
                 aria-label="Zoom out"
                 className="size-8 rounded-lg text-muted-foreground hover:bg-accent/60 hover:text-foreground"
               >
@@ -52,6 +58,7 @@ export function BottomLeftOptions({
                 type="button"
                 variant="ghost"
                 size="sm"
+                onClick={onResetZoom}
                 aria-label="Reset zoom to 100%"
                 className="h-8 min-w-14 px-2 text-xs font-medium text-foreground hover:bg-accent/60"
               >
@@ -71,6 +78,7 @@ export function BottomLeftOptions({
                 type="button"
                 variant="ghost"
                 size="icon-sm"
+                onClick={onZoomIn}
                 aria-label="Zoom in"
                 className="size-8 rounded-lg text-muted-foreground hover:bg-accent/60 hover:text-foreground"
               >
@@ -93,6 +101,7 @@ export function BottomLeftOptions({
                 variant="ghost"
                 size="icon-sm"
                 disabled={!canUndo}
+                onClick={onUndo}
                 aria-label="Undo last action"
                 className="size-8 rounded-lg text-muted-foreground hover:bg-accent/60 hover:text-foreground disabled:opacity-40"
               >
@@ -113,6 +122,7 @@ export function BottomLeftOptions({
                 variant="ghost"
                 size="icon-sm"
                 disabled={!canRedo}
+                onClick={onRedo}
                 aria-label="Redo last action"
                 className="size-8 rounded-lg text-muted-foreground hover:bg-accent/60 hover:text-foreground disabled:opacity-40"
               >

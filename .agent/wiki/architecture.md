@@ -42,7 +42,7 @@ flowchart TD
         Store["Local State Manager\n(Active Elements Map)"]
         Queue["Offline / Outbox Queue\n(Pending Operations)"]
         WSClient["WebSocket Client\n(Auto-reconnect & Heartbeat)"]
-        
+
         UI -->|Interactions| Engine
         Engine -->|Optimistic Mutations| Store
         Store -->|Enqueue Op| Queue
@@ -58,7 +58,7 @@ flowchart TD
         RoomMgr["Room Manager\n(Active Rooms in Memory)"]
         SyncEngine["Conflict Resolution Engine\n(LWW + Version Checking)"]
         StoreAdapter["Persistence / Snapshot Adapter\n(In-memory / Disk cache)"]
-        
+
         WSServer --> RoomMgr
         RoomMgr --> SyncEngine
         SyncEngine --> StoreAdapter
@@ -88,22 +88,23 @@ export interface BaseMessage<TType extends string, TPayload> {
 
 ### 3.2 Core Event Catalog
 
-| Event Name | Direction | Description |
-| :--- | :--- | :--- |
-| `room:join` | Client $\to$ Server | Client requests to join a room with their ephemeral profile (name, color). |
-| `room:joined` | Server $\to$ Client | Server returns current room snapshot (elements, active peers). |
+| Event Name        | Direction                          | Description                                                                 |
+| :---------------- | :--------------------------------- | :-------------------------------------------------------------------------- |
+| `room:join`       | Client $\to$ Server                | Client requests to join a room with their ephemeral profile (name, color).  |
+| `room:joined`     | Server $\to$ Client                | Server returns current room snapshot (elements, active peers).              |
 | `presence:cursor` | Client $\rightleftharpoons$ Server | Ephemeral cursor coordinates `(x, y)` for multiplayer pointers (throttled). |
-| `element:create` | Client $\rightleftharpoons$ Server | Creation of one or more canvas elements. |
-| `element:update` | Client $\rightleftharpoons$ Server | Mutation of existing elements (drag, resize, color, text). |
-| `element:delete` | Client $\rightleftharpoons$ Server | Soft-deletion / tombstoning of element IDs. |
-| `sync:request` | Client $\to$ Server | Request missing mutations after recovering from disconnection. |
-| `heartbeat:ping` | Client $\rightleftharpoons$ Server | Keep-alive ping/pong frames every 5 seconds. |
+| `element:create`  | Client $\rightleftharpoons$ Server | Creation of one or more canvas elements.                                    |
+| `element:update`  | Client $\rightleftharpoons$ Server | Mutation of existing elements (drag, resize, color, text).                  |
+| `element:delete`  | Client $\rightleftharpoons$ Server | Soft-deletion / tombstoning of element IDs.                                 |
+| `sync:request`    | Client $\to$ Server                | Request missing mutations after recovering from disconnection.              |
+| `heartbeat:ping`  | Client $\rightleftharpoons$ Server | Keep-alive ping/pong frames every 5 seconds.                                |
 
 ---
 
 ## 4. State Synchronization & Conflict Resolution (LWW)
 
 ### 4.1 Last-Write-Wins (LWW) with Monotonic Versioning
+
 To achieve near-zero latency without heavyweight CRDT operational overhead, Vizi employs **Element-Level Last-Write-Wins (LWW)** backed by version numbers and timestamps:
 
 1. **Local Optimistic Mutation**:
@@ -125,6 +126,7 @@ To achieve near-zero latency without heavyweight CRDT operational overhead, Vizi
 ## 5. Fault Tolerance & Network Resilience
 
 ### 5.1 Connection State Machine
+
 ```mermaid
 stateDiagram-v2
     [*] --> CONNECTING
@@ -136,6 +138,7 @@ stateDiagram-v2
 ```
 
 ### 5.2 Resilient Reconnection Flow
+
 1. **Heartbeat Failure Detection**:
    - Client and server exchange `ping` / `pong` frames every 5s.
    - If no reply is received within 3s, the socket is immediately terminated and reconnection begins.

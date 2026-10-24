@@ -64,6 +64,15 @@ export function useKeyboardShortcuts({
         return;
       }
 
+      // Escape to cancel active tool back to select
+      if (e.key === HOTKEYS.ESCAPE) {
+        if (activeTool !== "select") {
+          e.preventDefault();
+          setActiveTool("select");
+          return;
+        }
+      }
+
       // Spacebar temporary pan
       if (e.key === HOTKEYS.SPACE && !e.repeat) {
         if (activeTool !== "pan") {

@@ -18,7 +18,7 @@ export function EmptyCard({ className, isVisible = true }: Props) {
         className,
       )}
     >
-      <Card className="pointer-events-auto w-full max-w-sm rounded-2xl border-border/80 bg-card/90 p-2 text-center shadow-lg backdrop-blur-md transition-shadow hover:shadow-xl">
+      <Card className="pointer-events-none w-full max-w-sm rounded-2xl border-border/80 bg-card/90 p-2 text-center shadow-lg backdrop-blur-md transition-shadow hover:shadow-xl">
         <CardHeader className="flex flex-col items-center gap-3 pb-2">
           <div className="relative flex size-24 items-center justify-center">
             <Image

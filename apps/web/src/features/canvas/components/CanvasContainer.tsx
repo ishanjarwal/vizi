@@ -7,6 +7,7 @@ import { DEFAULT_ACTIVE_TOOL } from "../constants";
 import { useCanvasHistory } from "../hooks/useCanvasHistory";
 import { useCanvasTransform } from "../hooks/useCanvasTransform";
 import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
+import { promptImageFile, setPendingImage } from "../toolbar_tools/ImageTool";
 import type {
   CanvasContainerProps as Props,
   CanvasElement,
@@ -64,13 +65,36 @@ export function CanvasContainer({ className, initialElements = [] }: Props) {
   const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
   const [activeTool, setActiveTool] = React.useState<ToolType>(DEFAULT_ACTIVE_TOOL);
   const [editingElementId, setEditingElementId] = React.useState<string | null>(null);
+  const [isDrawing, setIsDrawing] = React.useState(false);
 
-  const handleSelectTool = React.useCallback((tool: ToolType) => {
-    setActiveTool(tool);
-    if (tool !== "select") {
-      setSelectedIds([]);
-    }
-  }, []);
+  const handleSelectTool = React.useCallback(
+    (tool: ToolType) => {
+      if (tool === "image") {
+        promptImageFile({
+          onLoaded: () => {
+            setActiveTool("image");
+            setSelectedIds([]);
+          },
+          onCancel: () => {
+            if (activeTool === "image") {
+              setActiveTool("select");
+            }
+          },
+        });
+        return;
+      }
+
+      if (activeTool === "image") {
+        setPendingImage(null);
+      }
+
+      setActiveTool(tool);
+      if (tool !== "select") {
+        setSelectedIds([]);
+      }
+    },
+    [activeTool],
+  );
 
   const deleteSelected = React.useCallback(() => {
     if (selectedIds.length === 0 || editingElementId) return;
@@ -158,7 +182,7 @@ export function CanvasContainer({ className, initialElements = [] }: Props) {
       <TopRightMenu />
 
       {/* Center Empty Canvas State Card */}
-      <EmptyCard isVisible={elements.length === 0} />
+      <EmptyCard isVisible={elements.length === 0 && !isDrawing} />
 
       {/* Bottom Left Controls */}
       <BottomLeftOptions
@@ -189,6 +213,7 @@ export function CanvasContainer({ className, initialElements = [] }: Props) {
           panBy={panBy}
           handleWheel={handleWheel}
           theme={currentTheme}
+          onIsDrawingChange={setIsDrawing}
         />
       </div>
     </div>

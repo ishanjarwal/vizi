@@ -208,6 +208,7 @@ export interface CanvasStageProps {
     pointerPos: Point | null,
   ) => void;
   theme?: "light" | "dark";
+  onIsDrawingChange?: (isDrawing: boolean) => void;
 }
 
 export interface CanvasTransformerProps {

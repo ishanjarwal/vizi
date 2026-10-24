@@ -12,6 +12,7 @@ export const KEYBOARD_TOOL_SHORTCUTS: Record<string, ToolType> = {
   s: "sticky",
   t: "text",
   e: "eraser",
+  i: "image",
 };
 
 export const HOTKEYS = {

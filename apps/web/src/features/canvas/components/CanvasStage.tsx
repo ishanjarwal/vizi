@@ -34,6 +34,7 @@ export function CanvasStage({
   panBy,
   handleWheel: parentHandleWheel,
   theme = "light",
+  onIsDrawingChange,
 }: Props) {
   const isMounted = React.useSyncExternalStore(
     () => () => {},
@@ -234,6 +235,9 @@ export function CanvasStage({
 
     // Only run tool pointer down if clicked on background or if drawing/erasing tool
     if (isClickedOnBackground || activeTool !== "select") {
+      if (activeTool !== "select" && activeTool !== "pan") {
+        onIsDrawingChange?.(true);
+      }
       const handler = getToolHandler(activeTool);
       handler.onPointerDown(toolContext, screenPos, canvasPos, e.evt);
     }
@@ -256,6 +260,7 @@ export function CanvasStage({
   const handleStagePointerUp = (
     e: Konva.KonvaEventObject<MouseEvent | TouchEvent>,
   ) => {
+    onIsDrawingChange?.(false);
     const stage = stageRef.current;
     if (!stage) return;
 
@@ -493,7 +498,8 @@ export function CanvasStage({
           activeTool === "arrow" ||
           activeTool === "pen" ||
           activeTool === "sticky" ||
-          activeTool === "text"
+          activeTool === "text" ||
+          activeTool === "image"
         ? "cursor-crosshair"
         : "cursor-default";
 

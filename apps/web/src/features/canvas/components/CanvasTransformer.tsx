@@ -10,6 +10,17 @@ import type {
   LineElement,
 } from "../types";
 
+function snapTo45Degrees(dx: number, dy: number): { dx: number; dy: number } {
+  const length = Math.sqrt(dx * dx + dy * dy);
+  const angle = Math.atan2(dy, dx);
+  const step = Math.PI / 4; // 45 degrees
+  const snappedAngle = Math.round(angle / step) * step;
+  return {
+    dx: Math.round(length * Math.cos(snappedAngle)),
+    dy: Math.round(length * Math.sin(snappedAngle)),
+  };
+}
+
 export function CanvasTransformer({
   selectedIds,
   elements,
@@ -19,6 +30,29 @@ export function CanvasTransformer({
 }: Props) {
   const trRef = React.useRef<Konva.Transformer>(null);
   const themeConfig = getCanvasTheme(theme);
+  const isShiftPressedRef = React.useRef(false);
+  const [isShiftPressed, setIsShiftPressed] = React.useState(false);
+
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Shift") {
+        isShiftPressedRef.current = true;
+        setIsShiftPressed(true);
+      }
+    };
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.key === "Shift") {
+        isShiftPressedRef.current = false;
+        setIsShiftPressed(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
 
   const selectedElements = React.useMemo(() => {
     return elements.filter((el) => selectedIds.includes(el.id));
@@ -149,8 +183,26 @@ export function CanvasTransformer({
     const lineElement = selectedElements[0] as LineElement | ArrowElement;
     const pts = lineElement.points;
     if (pts.length >= 4) {
-      const p1 = { x: lineElement.x + pts[0], y: lineElement.y + pts[1] };
-      const p2 = { x: lineElement.x + pts[2], y: lineElement.y + pts[3] };
+      const rot = lineElement.rotation || 0;
+      let x1 = pts[0];
+      let y1 = pts[1];
+      let x2 = pts[2];
+      let y2 = pts[3];
+      if (rot !== 0) {
+        const rad = (rot * Math.PI) / 180;
+        const cos = Math.cos(rad);
+        const sin = Math.sin(rad);
+        const rx1 = x1 * cos - y1 * sin;
+        const ry1 = x1 * sin + y1 * cos;
+        const rx2 = x2 * cos - y2 * sin;
+        const ry2 = x2 * sin + y2 * cos;
+        x1 = rx1;
+        y1 = ry1;
+        x2 = rx2;
+        y2 = ry2;
+      }
+      const p1 = { x: lineElement.x + x1, y: lineElement.y + y1 };
+      const p2 = { x: lineElement.x + x2, y: lineElement.y + y2 };
 
       return (
         <Group>
@@ -164,27 +216,53 @@ export function CanvasTransformer({
             stroke={themeConfig.transformer.anchorStroke}
             strokeWidth={1.5}
             draggable
+            dragBoundFunc={(pos) => {
+              const isShift = isShiftPressedRef.current;
+              if (!isShift) return pos;
+              const { dx, dy } = snapTo45Degrees(pos.x - p2.x, pos.y - p2.y);
+              return { x: p2.x + dx, y: p2.y + dy };
+            }}
             onDragMove={(e) => {
+              let targetX = e.target.x();
+              let targetY = e.target.y();
+              const isShift = Boolean(e.evt?.shiftKey) || isShiftPressedRef.current;
+              if (isShift) {
+                const { dx, dy } = snapTo45Degrees(targetX - p2.x, targetY - p2.y);
+                targetX = p2.x + dx;
+                targetY = p2.y + dy;
+              }
               const newPts = [
-                e.target.x() - lineElement.x,
-                e.target.y() - lineElement.y,
-                pts[2],
-                pts[3],
+                targetX - lineElement.x,
+                targetY - lineElement.y,
+                x2,
+                y2,
               ];
               const updated = elements.map((item) =>
-                item.id === lineElement.id ? { ...item, points: newPts } : item,
+                item.id === lineElement.id
+                  ? { ...item, points: newPts, rotation: 0 }
+                  : item,
               );
               onElementsChange(updated);
             }}
             onDragEnd={(e) => {
+              let targetX = e.target.x();
+              let targetY = e.target.y();
+              const isShift = Boolean(e.evt?.shiftKey) || isShiftPressedRef.current;
+              if (isShift) {
+                const { dx, dy } = snapTo45Degrees(targetX - p2.x, targetY - p2.y);
+                targetX = p2.x + dx;
+                targetY = p2.y + dy;
+              }
               const newPts = [
-                e.target.x() - lineElement.x,
-                e.target.y() - lineElement.y,
-                pts[2],
-                pts[3],
+                targetX - lineElement.x,
+                targetY - lineElement.y,
+                x2,
+                y2,
               ];
               const updated = elements.map((item) =>
-                item.id === lineElement.id ? { ...item, points: newPts } : item,
+                item.id === lineElement.id
+                  ? { ...item, points: newPts, rotation: 0 }
+                  : item,
               );
               recordSnapshot(updated);
             }}
@@ -199,27 +277,53 @@ export function CanvasTransformer({
             stroke={themeConfig.transformer.anchorStroke}
             strokeWidth={1.5}
             draggable
+            dragBoundFunc={(pos) => {
+              const isShift = isShiftPressedRef.current;
+              if (!isShift) return pos;
+              const { dx, dy } = snapTo45Degrees(pos.x - p1.x, pos.y - p1.y);
+              return { x: p1.x + dx, y: p1.y + dy };
+            }}
             onDragMove={(e) => {
+              let targetX = e.target.x();
+              let targetY = e.target.y();
+              const isShift = Boolean(e.evt?.shiftKey) || isShiftPressedRef.current;
+              if (isShift) {
+                const { dx, dy } = snapTo45Degrees(targetX - p1.x, targetY - p1.y);
+                targetX = p1.x + dx;
+                targetY = p1.y + dy;
+              }
               const newPts = [
-                pts[0],
-                pts[1],
-                e.target.x() - lineElement.x,
-                e.target.y() - lineElement.y,
+                x1,
+                y1,
+                targetX - lineElement.x,
+                targetY - lineElement.y,
               ];
               const updated = elements.map((item) =>
-                item.id === lineElement.id ? { ...item, points: newPts } : item,
+                item.id === lineElement.id
+                  ? { ...item, points: newPts, rotation: 0 }
+                  : item,
               );
               onElementsChange(updated);
             }}
             onDragEnd={(e) => {
+              let targetX = e.target.x();
+              let targetY = e.target.y();
+              const isShift = Boolean(e.evt?.shiftKey) || isShiftPressedRef.current;
+              if (isShift) {
+                const { dx, dy } = snapTo45Degrees(targetX - p1.x, targetY - p1.y);
+                targetX = p1.x + dx;
+                targetY = p1.y + dy;
+              }
               const newPts = [
-                pts[0],
-                pts[1],
-                e.target.x() - lineElement.x,
-                e.target.y() - lineElement.y,
+                x1,
+                y1,
+                targetX - lineElement.x,
+                targetY - lineElement.y,
               ];
               const updated = elements.map((item) =>
-                item.id === lineElement.id ? { ...item, points: newPts } : item,
+                item.id === lineElement.id
+                  ? { ...item, points: newPts, rotation: 0 }
+                  : item,
               );
               recordSnapshot(updated);
             }}
@@ -254,6 +358,8 @@ export function CanvasTransformer({
       enabledAnchors={enabledAnchors}
       keepRatio={hasTextOrImage}
       ignoreStroke={true}
+      rotationSnaps={isShiftPressed ? [0, 45, 90, 135, 180, 225, 270, 315] : []}
+      rotationSnapTolerance={isShiftPressed ? 22.5 : 0}
       borderStroke={themeConfig.transformer.borderStroke}
       borderDash={themeConfig.transformer.borderDash as unknown as number[]}
       borderStrokeWidth={1.5}

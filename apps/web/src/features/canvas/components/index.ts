@@ -10,4 +10,5 @@ export { SelectionMarquee } from "./SelectionMarquee";
 export { ShapeFloatingToolbar } from "./ShapeFloatingToolbar";
 export { StickyColorPalette } from "./StickyColorPalette";
 export { TextEditorOverlay } from "./TextEditorOverlay";
+export { CanvasOptionsPanel } from "./CanvasOptionsPanel";
 export { CanvasContainer } from "./CanvasContainer";

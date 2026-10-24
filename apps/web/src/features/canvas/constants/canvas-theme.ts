@@ -19,6 +19,7 @@ export const CANVAS_LIGHT_THEME = {
     fill: "#fff1f2", // Soft light rose pastel background
     cornerRadius: 12,
     opacity: 1,
+    fontSize: 24,
   },
   eraser: {
     pendingDeleteOpacity: 0.25,
@@ -29,6 +30,7 @@ export const CANVAS_LIGHT_THEME = {
     defaultColor: "#fef08a", // Warm vibrant pastel yellow
     cornerRadius: 8,
     textColor: "#1e293b",
+    fontSize: 24,
     colors: [
       { name: "Yellow", value: "#fef08a" },
       { name: "Pink", value: "#fbcfe8" },
@@ -105,6 +107,7 @@ export const CANVAS_DARK_THEME = {
     fill: "#3b1d28", // Deep muted rose background
     cornerRadius: 12,
     opacity: 1,
+    fontSize: 24,
   },
   eraser: {
     pendingDeleteOpacity: 0.25,
@@ -115,6 +118,7 @@ export const CANVAS_DARK_THEME = {
     defaultColor: "#713f12", // Rich deep amber/yellow
     cornerRadius: 8,
     textColor: "#f8fafc",
+    fontSize: 24,
     colors: [
       { name: "Yellow", value: "#713f12" },
       { name: "Pink", value: "#831843" },

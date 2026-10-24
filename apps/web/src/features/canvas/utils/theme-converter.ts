@@ -186,3 +186,32 @@ export function convertElementsToTheme(
 ): CanvasElement[] {
   return elements.map((el) => convertElementTheme(el, toTheme));
 }
+
+/**
+ * Converts a stroke color to the target theme.
+ */
+export function convertStrokeColor(
+  color: string,
+  toTheme: "light" | "dark",
+): string {
+  const lower = color.toLowerCase();
+  if (toTheme === "dark") {
+    return STROKE_LIGHT_TO_DARK[lower] ?? color;
+  }
+  return STROKE_DARK_TO_LIGHT[lower] ?? color;
+}
+
+/**
+ * Converts a fill color to the target theme.
+ */
+export function convertFillColor(
+  color: string,
+  toTheme: "light" | "dark",
+): string {
+  const lower = color.toLowerCase();
+  if (lower === "transparent") return "transparent";
+  if (toTheme === "dark") {
+    return FILL_LIGHT_TO_DARK[lower] ?? color;
+  }
+  return FILL_DARK_TO_LIGHT[lower] ?? color;
+}

@@ -68,7 +68,7 @@ export function TextEditorOverlay({
   let screenY = transform.y + element.y * transform.scale;
   let screenWidth = 200 * transform.scale;
   let screenHeight = 44 * transform.scale;
-  let fontSize = 18 * transform.scale;
+  let fontSize = (element.fontSize ?? CANVAS_THEME.defaultShape.fontSize) * transform.scale;
   let isCentered = false;
 
   switch (element.type) {
@@ -76,7 +76,7 @@ export function TextEditorOverlay({
     case "diamond":
       screenWidth = element.width * transform.scale;
       screenHeight = element.height * transform.scale;
-      fontSize = 18 * transform.scale;
+      fontSize = (element.fontSize ?? CANVAS_THEME.defaultShape.fontSize) * transform.scale;
       isCentered = true;
       break;
 
@@ -85,7 +85,7 @@ export function TextEditorOverlay({
       screenY = transform.y + (element.y - element.radiusY) * transform.scale;
       screenWidth = element.radiusX * 2 * transform.scale;
       screenHeight = element.radiusY * 2 * transform.scale;
-      fontSize = 18 * transform.scale;
+      fontSize = (element.fontSize ?? CANVAS_THEME.defaultShape.fontSize) * transform.scale;
       isCentered = true;
       break;
 
@@ -94,7 +94,7 @@ export function TextEditorOverlay({
       screenY = transform.y + (element.y + 14) * transform.scale;
       screenWidth = Math.max(40, (element.width - 28) * transform.scale);
       screenHeight = Math.max(40, (element.height - 28) * transform.scale);
-      fontSize = 18 * transform.scale;
+      fontSize = (element.fontSize ?? CANVAS_THEME.stickyNote.fontSize) * transform.scale;
       isCentered = false;
       break;
 

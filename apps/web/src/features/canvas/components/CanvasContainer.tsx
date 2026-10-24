@@ -8,13 +8,16 @@ import { useCanvasHistory } from "../hooks/useCanvasHistory";
 import { useCanvasTransform } from "../hooks/useCanvasTransform";
 import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import { promptImageFile, setPendingImage } from "../toolbar_tools/ImageTool";
+import { getCanvasTheme } from "../constants/canvas-theme";
 import type {
   CanvasContainerProps as Props,
+  CanvasDrawingStyles,
   CanvasElement,
   ToolType,
 } from "../types";
-import { convertElementTheme } from "../utils";
+import { convertElementTheme, convertFillColor, convertStrokeColor } from "../utils";
 import { BottomLeftOptions } from "./BottomLeftOptions";
+import { CanvasOptionsPanel } from "./CanvasOptionsPanel";
 import { CanvasStage } from "./CanvasStage";
 import { EmptyCard } from "./EmptyCard";
 import { Toolbar } from "./Toolbar";
@@ -54,11 +57,25 @@ export function CanvasContainer({ className, initialElements = [] }: Props) {
     mounted && resolvedTheme === "dark" ? "dark" : "light";
   const prevThemeRef = React.useRef<"light" | "dark">(currentTheme);
 
+  const [drawingStyles, setDrawingStyles] = React.useState<CanvasDrawingStyles>(() => {
+    const config = getCanvasTheme(currentTheme);
+    return {
+      stroke: config.defaultShape.stroke,
+      fill: config.defaultShape.fill,
+      strokeWidth: config.defaultShape.strokeWidth,
+    };
+  });
+
   React.useEffect(() => {
     if (!mounted) return;
     if (prevThemeRef.current !== currentTheme) {
       prevThemeRef.current = currentTheme;
       mapHistoryElements((el) => convertElementTheme(el, currentTheme));
+      setDrawingStyles((prev) => ({
+        ...prev,
+        stroke: convertStrokeColor(prev.stroke, currentTheme),
+        fill: convertFillColor(prev.fill, currentTheme),
+      }));
     }
   }, [currentTheme, mounted, mapHistoryElements]);
 
@@ -105,6 +122,34 @@ export function CanvasContainer({ className, initialElements = [] }: Props) {
     });
     setSelectedIds([]);
   }, [selectedIds, editingElementId, setElements, recordSnapshot]);
+
+  const handleChangeDrawingStyles = React.useCallback(
+    (newStyles: CanvasDrawingStyles) => {
+      setDrawingStyles(newStyles);
+      if (selectedIds.length > 0) {
+        setElements((prev) => {
+          const updated = prev.map((el) => {
+            if (!selectedIds.includes(el.id)) return el;
+            const updates: Partial<CanvasElement> = {};
+            if ("stroke" in el) updates.stroke = newStyles.stroke;
+            if (
+              "fill" in el &&
+              el.type !== "sticky" &&
+              el.type !== "pen" &&
+              el.type !== "line"
+            ) {
+              updates.fill = newStyles.fill;
+            }
+            if ("strokeWidth" in el) updates.strokeWidth = newStyles.strokeWidth;
+            return { ...el, ...updates } as CanvasElement;
+          });
+          recordSnapshot(updated);
+          return updated;
+        });
+      }
+    },
+    [selectedIds, setElements, recordSnapshot],
+  );
 
   useKeyboardShortcuts({
     activeTool,
@@ -196,6 +241,13 @@ export function CanvasContainer({ className, initialElements = [] }: Props) {
         onRedo={redo}
       />
 
+      {/* Middle Left Drawing Style Options Panel */}
+      <CanvasOptionsPanel
+        styles={drawingStyles}
+        onChangeStyles={handleChangeDrawingStyles}
+        theme={currentTheme}
+      />
+
       {/* Canvas Konva Stage */}
       <div className="absolute inset-0 z-0">
         <CanvasStage
@@ -203,6 +255,7 @@ export function CanvasContainer({ className, initialElements = [] }: Props) {
           selectedIds={selectedIds}
           activeTool={activeTool}
           transform={transform}
+          drawingStyles={drawingStyles}
           editingElementId={editingElementId}
           onEditingElementIdChange={setEditingElementId}
           onElementsChange={setElements}

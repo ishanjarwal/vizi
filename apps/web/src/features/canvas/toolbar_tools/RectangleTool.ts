@@ -41,9 +41,9 @@ export const RectangleTool: CanvasToolHandler = {
       width,
       height,
       cornerRadius: themeConfig.defaultShape.cornerRadius,
-      stroke: themeConfig.defaultShape.stroke,
-      strokeWidth: themeConfig.defaultShape.strokeWidth,
-      fill: themeConfig.defaultShape.fill,
+      stroke: ctx.drawingStyles?.stroke ?? themeConfig.defaultShape.stroke,
+      strokeWidth: ctx.drawingStyles?.strokeWidth ?? themeConfig.defaultShape.strokeWidth,
+      fill: ctx.drawingStyles?.fill ?? themeConfig.defaultShape.fill,
       opacity: themeConfig.defaultShape.opacity,
     };
 
@@ -85,13 +85,14 @@ export const RectangleTool: CanvasToolHandler = {
         width,
         height,
         cornerRadius: themeConfig.defaultShape.cornerRadius,
-        stroke: themeConfig.defaultShape.stroke,
-        strokeWidth: themeConfig.defaultShape.strokeWidth,
-        fill: themeConfig.defaultShape.fill,
+        stroke: ctx.drawingStyles?.stroke ?? themeConfig.defaultShape.stroke,
+        strokeWidth: ctx.drawingStyles?.strokeWidth ?? themeConfig.defaultShape.strokeWidth,
+        fill: ctx.drawingStyles?.fill ?? themeConfig.defaultShape.fill,
         opacity: themeConfig.defaultShape.opacity,
       };
 
       const nextElements = [...ctx.elements, newRect];
+      ctx.setElements(nextElements);
       ctx.recordSnapshot(nextElements);
       ctx.setSelectedIds([newRect.id]);
       ctx.setActiveTool("select");

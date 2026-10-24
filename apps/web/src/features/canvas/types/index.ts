@@ -67,6 +67,7 @@ export interface BaseElementProps {
   cornerRadius?: number;
   isPendingDelete?: boolean;
   text?: string;
+  fontSize?: number;
 }
 
 export interface RectangleElement extends BaseElementProps {
@@ -188,12 +189,26 @@ export interface EmptyCardProps {
   isVisible?: boolean;
 }
 
+export interface CanvasDrawingStyles {
+  stroke: string;
+  fill: string;
+  strokeWidth: number;
+}
+
+export interface CanvasOptionsPanelProps {
+  className?: string;
+  theme?: "light" | "dark";
+  styles: CanvasDrawingStyles;
+  onChangeStyles: (styles: CanvasDrawingStyles) => void;
+}
+
 export interface CanvasStageProps {
   elements: CanvasElement[];
   selectedIds: string[];
   activeTool: ToolType;
   transform: ViewportTransform;
   editingElementId?: string | null;
+  drawingStyles?: CanvasDrawingStyles;
   onEditingElementIdChange?: (id: string | null) => void;
   onElementsChange: (elements: CanvasElement[]) => void;
   onSelectElements: (ids: string[]) => void;

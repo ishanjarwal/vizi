@@ -60,6 +60,9 @@ export function ShapeFloatingToolbar({
   if (screenY < 64) {
     screenY = transform.y + (box.y + box.height) * transform.scale + 14;
   }
+  if (typeof window !== "undefined") {
+    screenY = Math.max(70, Math.min(window.innerHeight - panelHeight - 20, screenY));
+  }
 
   const handleFillSelect = (fillColor: string) => {
     if ("fill" in element) {

@@ -39,8 +39,8 @@ export const LineTool: CanvasToolHandler = {
       x: startPoint.x,
       y: startPoint.y,
       points: [0, 0, dx, dy],
-      stroke: themeConfig.defaultShape.stroke,
-      strokeWidth: themeConfig.defaultShape.strokeWidth,
+      stroke: ctx.drawingStyles?.stroke ?? themeConfig.defaultShape.stroke,
+      strokeWidth: ctx.drawingStyles?.strokeWidth ?? themeConfig.defaultShape.strokeWidth,
       fill: "transparent",
       opacity: themeConfig.defaultShape.opacity,
     };
@@ -84,13 +84,14 @@ export const LineTool: CanvasToolHandler = {
         x: initialX,
         y: initialY,
         points: [0, 0, dx, dy],
-        stroke: themeConfig.defaultShape.stroke,
-        strokeWidth: themeConfig.defaultShape.strokeWidth,
+        stroke: ctx.drawingStyles?.stroke ?? themeConfig.defaultShape.stroke,
+        strokeWidth: ctx.drawingStyles?.strokeWidth ?? themeConfig.defaultShape.strokeWidth,
         fill: "transparent",
         opacity: themeConfig.defaultShape.opacity,
       };
 
       const nextElements = [...ctx.elements, newLine];
+      ctx.setElements(nextElements);
       ctx.recordSnapshot(nextElements);
       ctx.setSelectedIds([newLine.id]);
       ctx.setActiveTool("select");

@@ -42,9 +42,9 @@ export const EllipseTool: CanvasToolHandler = {
       y,
       radiusX,
       radiusY,
-      stroke: themeConfig.defaultShape.stroke,
-      strokeWidth: themeConfig.defaultShape.strokeWidth,
-      fill: themeConfig.defaultShape.fill,
+      stroke: ctx.drawingStyles?.stroke ?? themeConfig.defaultShape.stroke,
+      strokeWidth: ctx.drawingStyles?.strokeWidth ?? themeConfig.defaultShape.strokeWidth,
+      fill: ctx.drawingStyles?.fill ?? themeConfig.defaultShape.fill,
       opacity: themeConfig.defaultShape.opacity,
     };
 
@@ -87,13 +87,14 @@ export const EllipseTool: CanvasToolHandler = {
         y,
         radiusX,
         radiusY,
-        stroke: themeConfig.defaultShape.stroke,
-        strokeWidth: themeConfig.defaultShape.strokeWidth,
-        fill: themeConfig.defaultShape.fill,
+        stroke: ctx.drawingStyles?.stroke ?? themeConfig.defaultShape.stroke,
+        strokeWidth: ctx.drawingStyles?.strokeWidth ?? themeConfig.defaultShape.strokeWidth,
+        fill: ctx.drawingStyles?.fill ?? themeConfig.defaultShape.fill,
         opacity: themeConfig.defaultShape.opacity,
       };
 
       const nextElements = [...ctx.elements, newEllipse];
+      ctx.setElements(nextElements);
       ctx.recordSnapshot(nextElements);
       ctx.setSelectedIds([newEllipse.id]);
       ctx.setActiveTool("select");

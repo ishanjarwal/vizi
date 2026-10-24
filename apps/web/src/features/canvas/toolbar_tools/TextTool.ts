@@ -21,7 +21,7 @@ export const TextTool: CanvasToolHandler = {
       text: "",
       fontSize: 24,
       fontFamily: themeConfig.fonts.canvas,
-      stroke: themeConfig.defaultShape.stroke,
+      stroke: ctx.drawingStyles?.stroke ?? themeConfig.defaultShape.stroke,
       strokeWidth: 1,
       fill: "transparent",
       opacity: 1,

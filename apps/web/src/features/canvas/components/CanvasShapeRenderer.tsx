@@ -99,7 +99,7 @@ export function CanvasShapeRenderer({
               text={element.text}
               align="center"
               verticalAlign="middle"
-              fontSize={18}
+              fontSize={element.fontSize ?? CANVAS_THEME.defaultShape.fontSize}
               fontFamily={CANVAS_THEME.fonts.canvas}
               fill={element.stroke || defaultTextColor}
               wrap="word"
@@ -142,7 +142,7 @@ export function CanvasShapeRenderer({
               text={element.text}
               align="center"
               verticalAlign="middle"
-              fontSize={18}
+              fontSize={element.fontSize ?? CANVAS_THEME.defaultShape.fontSize}
               fontFamily={CANVAS_THEME.fonts.canvas}
               fill={element.stroke || defaultTextColor}
               wrap="word"
@@ -194,7 +194,7 @@ export function CanvasShapeRenderer({
               text={element.text}
               align="center"
               verticalAlign="middle"
-              fontSize={18}
+              fontSize={element.fontSize ?? CANVAS_THEME.defaultShape.fontSize}
               fontFamily={CANVAS_THEME.fonts.canvas}
               fill={element.stroke || defaultTextColor}
               wrap="word"
@@ -316,7 +316,7 @@ export function CanvasShapeRenderer({
               width={element.width - 28}
               height={element.height - 28}
               text={element.text}
-              fontSize={18}
+              fontSize={element.fontSize ?? CANVAS_THEME.stickyNote.fontSize}
               lineHeight={1.3}
               fontFamily={CANVAS_THEME.fonts.canvas}
               fill={stickyTextColor}

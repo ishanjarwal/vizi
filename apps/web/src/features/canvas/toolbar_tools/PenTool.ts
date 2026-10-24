@@ -30,8 +30,8 @@ export const PenTool: CanvasToolHandler = {
       x: startPoint.x,
       y: startPoint.y,
       points: [...currentPoints],
-      stroke: themeConfig.defaultShape.stroke,
-      strokeWidth: themeConfig.defaultShape.strokeWidth,
+      stroke: ctx.drawingStyles?.stroke ?? themeConfig.defaultShape.stroke,
+      strokeWidth: ctx.drawingStyles?.strokeWidth ?? themeConfig.defaultShape.strokeWidth,
       fill: "transparent",
       opacity: themeConfig.defaultShape.opacity,
     };
@@ -63,14 +63,15 @@ export const PenTool: CanvasToolHandler = {
       x: initialX,
       y: initialY,
       points: finalPoints,
-      stroke: themeConfig.defaultShape.stroke,
-      strokeWidth: themeConfig.defaultShape.strokeWidth,
+      stroke: ctx.drawingStyles?.stroke ?? themeConfig.defaultShape.stroke,
+      strokeWidth: ctx.drawingStyles?.strokeWidth ?? themeConfig.defaultShape.strokeWidth,
       fill: "transparent",
       opacity: themeConfig.defaultShape.opacity,
     };
 
     const nextElements = [...ctx.elements, newPen];
+    ctx.setElements(nextElements);
     ctx.recordSnapshot(nextElements);
-    ctx.setSelectedIds([]);
+    ctx.setSelectedIds([newPen.id]);
   },
 };

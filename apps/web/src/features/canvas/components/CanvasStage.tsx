@@ -35,6 +35,7 @@ export function CanvasStage({
   handleWheel: parentHandleWheel,
   theme = "light",
   onIsDrawingChange,
+  drawingStyles,
 }: Props) {
   const isMounted = React.useSyncExternalStore(
     () => () => {},
@@ -141,6 +142,7 @@ export function CanvasStage({
       activeTool,
       setActiveTool: onSetActiveTool,
       theme,
+      drawingStyles,
     };
   }, [
     elements,
@@ -155,6 +157,7 @@ export function CanvasStage({
     activeTool,
     onSetActiveTool,
     theme,
+    drawingStyles,
   ]);
 
   const handleWheel = (e: Konva.KonvaEventObject<WheelEvent>) => {
@@ -290,7 +293,7 @@ export function CanvasStage({
         text: "",
         fontSize: 24,
         fontFamily: CANVAS_THEME.fonts.canvas,
-        stroke: getCanvasTheme(theme).defaultShape.stroke,
+        stroke: drawingStyles?.stroke ?? getCanvasTheme(theme).defaultShape.stroke,
         strokeWidth: 1,
         fill: "transparent",
         opacity: 1,

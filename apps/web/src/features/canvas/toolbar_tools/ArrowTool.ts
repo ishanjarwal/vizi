@@ -39,9 +39,9 @@ export const ArrowTool: CanvasToolHandler = {
       x: startPoint.x,
       y: startPoint.y,
       points: [0, 0, dx, dy],
-      stroke: themeConfig.defaultShape.stroke,
-      strokeWidth: themeConfig.defaultShape.strokeWidth,
-      fill: themeConfig.defaultShape.stroke,
+      stroke: ctx.drawingStyles?.stroke ?? themeConfig.defaultShape.stroke,
+      strokeWidth: ctx.drawingStyles?.strokeWidth ?? themeConfig.defaultShape.strokeWidth,
+      fill: ctx.drawingStyles?.stroke ?? themeConfig.defaultShape.stroke,
       opacity: themeConfig.defaultShape.opacity,
     };
 
@@ -84,13 +84,14 @@ export const ArrowTool: CanvasToolHandler = {
         x: initialX,
         y: initialY,
         points: [0, 0, dx, dy],
-        stroke: themeConfig.defaultShape.stroke,
-        strokeWidth: themeConfig.defaultShape.strokeWidth,
-        fill: themeConfig.defaultShape.stroke,
+        stroke: ctx.drawingStyles?.stroke ?? themeConfig.defaultShape.stroke,
+        strokeWidth: ctx.drawingStyles?.strokeWidth ?? themeConfig.defaultShape.strokeWidth,
+        fill: ctx.drawingStyles?.stroke ?? themeConfig.defaultShape.stroke,
         opacity: themeConfig.defaultShape.opacity,
       };
 
       const nextElements = [...ctx.elements, newArrow];
+      ctx.setElements(nextElements);
       ctx.recordSnapshot(nextElements);
       ctx.setSelectedIds([newArrow.id]);
       ctx.setActiveTool("select");

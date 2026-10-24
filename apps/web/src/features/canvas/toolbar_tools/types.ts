@@ -1,5 +1,6 @@
 import type {
   BoundingBox,
+  CanvasDrawingStyles,
   CanvasElement,
   EditingTextState,
   Point,
@@ -24,6 +25,7 @@ export interface ToolContext {
   activeTool: ToolType;
   setActiveTool: (tool: ToolType) => void;
   theme: "light" | "dark";
+  drawingStyles?: CanvasDrawingStyles;
 }
 
 export interface CanvasToolHandler {

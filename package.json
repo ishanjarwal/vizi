@@ -7,12 +7,18 @@
     "lint": "turbo lint",
     "check-types": "turbo check-types",
     "format": "pnpm dlx prettier --write \"**/*.{ts,tsx,md,json}\"",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test:load": "bash load-tests/scripts/run-all.sh",
+    "test:load:health": "artillery run load-tests/scenarios/01-http-health-availability.yml",
+    "test:load:ws": "artillery run load-tests/scenarios/03-websocket-realtime.yml",
+    "test:load:stress": "artillery run load-tests/scenarios/04-stress-rampup.yml",
+    "test:load:summary": "node load-tests/scripts/generate-resume-summary.mjs"
   },
   "packageManager": "pnpm@10.26.2",
   "devDependencies": {
     "@commitlint/cli": "^21.2.4",
     "@commitlint/config-conventional": "^21.2.4",
+    "artillery": "^2.0.34",
     "eslint": "^9.39.5",
     "husky": "^9.1.7",
     "lint-staged": "^17.6.0",

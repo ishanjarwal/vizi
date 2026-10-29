@@ -20,11 +20,13 @@ export function createApp(): Express {
   // Inngest background workers endpoint
   app.use("/api/inngest", serve({ client: inngest, functions: inngestFunctions }));
 
-  // REST Rate Limiter
+  // Health & Readiness Probes (unthrottled for Docker / K8s / load balancer probes)
+  app.use("/health", healthRouter);
+
+  // REST Rate Limiter for client API endpoints
   app.use(httpRateLimiter);
 
-  // Routes
-  app.use("/health", healthRouter);
+  // Client API Routes
   app.use("/api/rooms", roomsRouter);
 
   // Fallback 404

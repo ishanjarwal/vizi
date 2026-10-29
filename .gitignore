@@ -34,3 +34,7 @@ Thumbs.db
 data/
 postgres_data/
 .docker/
+
+
+# Load tests via Artillery
+load-tests

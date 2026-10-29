@@ -33,7 +33,8 @@ The primary engineering goal of Vizi is to demonstrate **low-latency real-time s
 
 - **Room Generation**: Rooms are created client-side or server-side by minting a unique, non-guessable `roomId`.
 - **Peer Presence**: When a user enters `/room/:roomId`, a WebSocket handshake establishes their session. Peers in the room receive live cursor coordinates, presence status, and active selection bounding boxes.
-- **Session Lifespan**: Rooms persist their active state in-memory on the server with background snapshots/persistence. Stale or empty rooms can enter dormant status and be re-hydrated on demand.
+- **Session Lifespan**: Rooms persist their active state in-memory on the server with background snapshots/persistence. Stale or empty rooms enter dormant status and can be re-hydrated on demand.
+- **Data Retention & Auto-Cleanup**: An Inngest scheduled worker purges orphaned and inactive rooms (including all canvas elements) that have not been modified or accessed for at least 1 day, while protecting currently active rooms.
 
 ---
 
@@ -140,3 +141,13 @@ interface BaseElement {
 | **Reconnection Resilience**   | Automatic reconnection with exponential backoff & jitter                                  |
 | **Offline Operation**         | Uninterrupted offline drawing with an optimistic mutation queue that flushes on reconnect |
 | **State Consistency**         | Reconnect handshake guarantees zero dropped elements via state re-sync                    |
+
+---
+
+## 7. Deployment & Environment Strategy
+
+- **Multi-Container Topology**: Dockerized web client (Next.js standalone) and WebSocket server running as unprivileged containers on a shared bridge network (`infra-network`).
+- **Two-Tier Environment Strategy**:
+  - **Root-level (`.env.dev`, `.env.prod`)**: Supplies `NEXT_PUBLIC_*` client-side API/WS URLs required during Docker build time by Next.js.
+  - **App-level (`apps/server`, `apps/web`)**: Houses separate development and production runtime environment configurations.
+- **Docker Compose Execution**: Requires passing `--env-file .env.dev` or `--env-file .env.prod` explicitly to select the target deployment profile.

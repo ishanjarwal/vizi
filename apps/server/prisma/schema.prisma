@@ -1,0 +1,44 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+model Room {
+  id        String          @id
+  name      String          @default("Untitled Canvas")
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  elements  CanvasElement[]
+
+  @@map("rooms")
+}
+
+model CanvasElement {
+  id          String   @id
+  roomId      String   @map("room_id")
+  room        Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  type        String
+  x           Float
+  y           Float
+  width       Float?
+  height      Float?
+  rotation    Float?
+  stroke      String
+  strokeWidth Float    @map("stroke_width")
+  fill        String
+  opacity     Float
+  data        String   // Serialized JSON of shape-specific properties
+  version     Int      @default(1)
+  isDeleted   Boolean  @default(false) @map("is_deleted")
+  createdBy   String   @map("created_by")
+  updatedAt   DateTime @map("updated_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([roomId, isDeleted])
+  @@index([roomId, updatedAt])
+  @@map("canvas_elements")
+}

@@ -35,6 +35,7 @@ export function CanvasStage({
   handleWheel: parentHandleWheel,
   theme = "light",
   onIsDrawingChange,
+  onPointerMoveCanvas,
   drawingStyles,
 }: Props) {
   const isMounted = React.useSyncExternalStore(
@@ -256,6 +257,7 @@ export function CanvasStage({
     if (!screenPos) return;
 
     const canvasPos = screenToCanvasPoint(screenPos, transform);
+    onPointerMoveCanvas?.(canvasPos);
     const handler = getToolHandler(activeTool);
     handler.onPointerMove(toolContext, screenPos, canvasPos, e.evt);
   };
@@ -271,6 +273,7 @@ export function CanvasStage({
     if (!screenPos) return;
 
     const canvasPos = screenToCanvasPoint(screenPos, transform);
+    onPointerMoveCanvas?.(canvasPos);
     const handler = getToolHandler(activeTool);
     handler.onPointerUp(toolContext, screenPos, canvasPos, e.evt);
   };

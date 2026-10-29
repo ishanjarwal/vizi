@@ -1,4 +1,7 @@
 import type { LucideIcon } from "lucide-react";
+import type { Peer, UserInfo } from "@vizi/protocol";
+
+export type { Peer, UserInfo };
 
 export type ToolType =
   | "select"
@@ -68,6 +71,10 @@ export interface BaseElementProps {
   isPendingDelete?: boolean;
   text?: string;
   fontSize?: number;
+  version?: number;
+  updatedAt?: number;
+  createdBy?: string;
+  isDeleted?: boolean;
 }
 
 export interface RectangleElement extends BaseElementProps {
@@ -170,6 +177,33 @@ export interface TopMenuProps {
 export interface TopRightMenuProps {
   className?: string;
   children?: React.ReactNode;
+  onCollaborate?: () => void;
+  peerCount?: number;
+  isConnected?: boolean;
+  roomId?: string | null;
+}
+
+export interface UserCursorProps {
+  peer: Peer;
+  transform: ViewportTransform;
+}
+
+export interface UserCursorsOverlayProps {
+  peers: Peer[];
+  transform: ViewportTransform;
+  currentUserId?: string;
+}
+
+export interface CollaborateModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  roomId: string | null;
+  shareUrl: string;
+  peers: Peer[];
+  selfUser: UserInfo | null;
+  isConnected: boolean;
+  isConnecting: boolean;
+  onCreateRoom: () => Promise<void>;
 }
 
 export interface BottomLeftOptionsProps {
@@ -200,6 +234,12 @@ export interface CanvasOptionsPanelProps {
   theme?: "light" | "dark";
   styles: CanvasDrawingStyles;
   onChangeStyles: (styles: CanvasDrawingStyles) => void;
+  isDotted?: boolean;
+  onToggleDotted?: (checked: boolean) => void;
+  canvasBgId?: string;
+  onChangeCanvasBg?: (id: string) => void;
+  includeBgOnExport?: boolean;
+  onToggleIncludeBgOnExport?: (checked: boolean) => void;
 }
 
 export interface CanvasStageProps {
@@ -224,6 +264,7 @@ export interface CanvasStageProps {
   ) => void;
   theme?: "light" | "dark";
   onIsDrawingChange?: (isDrawing: boolean) => void;
+  onPointerMoveCanvas?: (point: Point) => void;
 }
 
 export interface CanvasTransformerProps {

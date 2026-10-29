@@ -83,6 +83,15 @@ export const CANVAS_LIGHT_THEME = {
       { label: "L", value: 36 },
       { label: "XL", value: 48 },
     ],
+    canvasBackgrounds: [
+      { id: "default", name: "Default", value: "#ffffff" },
+      { id: "slate", name: "Slate", value: "#f8fafc" },
+      { id: "rose", name: "Rose", value: "#fff1f2" },
+      { id: "amber", name: "Amber", value: "#fefce8" },
+      { id: "green", name: "Green", value: "#f0fdf4" },
+      { id: "blue", name: "Blue", value: "#f0f9ff" },
+      { id: "purple", name: "Purple", value: "#faf5ff" },
+    ],
   },
 } as const;
 
@@ -171,8 +180,43 @@ export const CANVAS_DARK_THEME = {
       { label: "L", value: 36 },
       { label: "XL", value: 48 },
     ],
+    canvasBackgrounds: [
+      { id: "default", name: "Default", value: "#121214" },
+      { id: "slate", name: "Slate", value: "#0f172a" },
+      { id: "rose", name: "Rose", value: "#201217" },
+      { id: "amber", name: "Amber", value: "#20190c" },
+      { id: "green", name: "Green", value: "#0d2216" },
+      { id: "blue", name: "Blue", value: "#0d1b32" },
+      { id: "purple", name: "Purple", value: "#1b112c" },
+    ],
   },
 } as const;
+
+export interface CanvasBgPreset {
+  id: string;
+  name: string;
+  light: string;
+  dark: string;
+}
+
+export const CANVAS_BG_PRESETS: readonly CanvasBgPreset[] = [
+  { id: "default", name: "Default", light: "#ffffff", dark: "#121214" },
+  { id: "slate", name: "Slate", light: "#f8fafc", dark: "#0f172a" },
+  { id: "rose", name: "Rose", light: "#fff1f2", dark: "#201217" },
+  { id: "amber", name: "Amber", light: "#fefce8", dark: "#20190c" },
+  { id: "green", name: "Green", light: "#f0fdf4", dark: "#0d2216" },
+  { id: "blue", name: "Blue", light: "#f0f9ff", dark: "#0d1b32" },
+  { id: "purple", name: "Purple", light: "#faf5ff", dark: "#1b112c" },
+] as const;
+
+export function getCanvasBgColor(
+  presetId: string,
+  theme: "light" | "dark" = "light",
+): string {
+  const preset =
+    CANVAS_BG_PRESETS.find((p) => p.id === presetId) ?? CANVAS_BG_PRESETS[0];
+  return theme === "dark" ? preset.dark : preset.light;
+}
 
 export function getCanvasTheme(theme: "light" | "dark" = "light") {
   return theme === "dark" ? CANVAS_DARK_THEME : CANVAS_LIGHT_THEME;

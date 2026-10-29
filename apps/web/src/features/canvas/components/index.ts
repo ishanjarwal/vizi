@@ -12,3 +12,6 @@ export { StickyColorPalette } from "./StickyColorPalette";
 export { TextEditorOverlay } from "./TextEditorOverlay";
 export { CanvasOptionsPanel } from "./CanvasOptionsPanel";
 export { CanvasContainer } from "./CanvasContainer";
+export { UserCursor } from "./UserCursor";
+export { UserCursorsOverlay } from "./UserCursorsOverlay";
+export { CollaborateModal } from "./CollaborateModal";

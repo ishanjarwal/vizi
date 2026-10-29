@@ -215,3 +215,37 @@ export function convertFillColor(
   }
   return FILL_DARK_TO_LIGHT[lower] ?? color;
 }
+
+const CANVAS_BG_LIGHT_TO_DARK: Record<string, string> = {
+  "#ffffff": "#121214",
+  "#f8fafc": "#0f172a",
+  "#fff1f2": "#201217",
+  "#fefce8": "#20190c",
+  "#f0fdf4": "#0d2216",
+  "#f0f9ff": "#0d1b32",
+  "#faf5ff": "#1b112c",
+};
+
+const CANVAS_BG_DARK_TO_LIGHT: Record<string, string> = {
+  "#121214": "#ffffff",
+  "#0f172a": "#f8fafc",
+  "#201217": "#fff1f2",
+  "#20190c": "#fefce8",
+  "#0d2216": "#f0fdf4",
+  "#0d1b32": "#f0f9ff",
+  "#1b112c": "#faf5ff",
+};
+
+/**
+ * Converts a canvas background color to the target theme.
+ */
+export function convertCanvasBgColor(
+  color: string,
+  toTheme: "light" | "dark",
+): string {
+  const lower = color.toLowerCase();
+  if (toTheme === "dark") {
+    return CANVAS_BG_LIGHT_TO_DARK[lower] ?? color;
+  }
+  return CANVAS_BG_DARK_TO_LIGHT[lower] ?? color;
+}

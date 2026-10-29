@@ -1,17 +1,32 @@
 "use client";
 
 import * as React from "react";
-import { PaintBucket, PenLine } from "lucide-react";
+import {
+  Check,
+  Grid,
+  ImageDown,
+  PaintBucket,
+  Palette,
+  PenLine,
+} from "lucide-react";
 import { cn } from "@/shared/lib/utils";
-import { getCanvasTheme } from "../constants/canvas-theme";
+import { CANVAS_BG_PRESETS, getCanvasTheme } from "../constants/canvas-theme";
 import type { CanvasOptionsPanelProps as Props } from "../types";
 import { Separator } from "@/shared/components/shadcn/separator";
+import { Switch } from "@/shared/components/shadcn/switch";
+import { Button } from "@/shared/components/shadcn/button";
 
 export function CanvasOptionsPanel({
   className,
   theme = "light",
   styles,
   onChangeStyles,
+  isDotted = true,
+  onToggleDotted,
+  canvasBgId = "default",
+  onChangeCanvasBg,
+  includeBgOnExport = true,
+  onToggleIncludeBgOnExport,
 }: Props) {
   const themeConfig = getCanvasTheme(theme);
 
@@ -44,11 +59,12 @@ export function CanvasOptionsPanel({
         className,
       )}
     >
-      <div className="flex w-[200px] flex-col gap-3 rounded-2xl border border-border/80 bg-card/95 p-3 shadow-xl backdrop-blur-md">
-        <div className="mb-2 gap-1 flex flex-col">
-          <p className="text-sm text-muted-foreground">Default Options</p>
+      <div className="flex w-[200px] max-h-[calc(100vh-120px)] overflow-y-auto flex-col gap-3 rounded-2xl border border-border/80 bg-card/95 p-3 shadow-xl backdrop-blur-md">
+        <div className="mb-1 gap-1 flex flex-col">
+          <p className="text-sm text-muted-foreground font-medium">Options</p>
           <Separator orientation="horizontal" className="w-full h-px" />
         </div>
+
         {/* Stroke Color Section */}
         <div className="flex flex-col gap-1.5">
           <div className="flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground">
@@ -143,10 +159,77 @@ export function CanvasOptionsPanel({
                       height: `${sw.value === 1 ? 1.5 : sw.value === 2 ? 2.5 : 4}px`,
                     }}
                   />
-                  {/* <span>{sw.label}</span> */}
                 </button>
               );
             })}
+          </div>
+        </div>
+
+        <Separator orientation="horizontal" className="w-full h-px my-0.5" />
+
+        {/* Canvas Background Color Section */}
+        <div className="flex flex-col gap-1.5">
+          <div className="flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground">
+            <Palette className="size-3" />
+            <span>Canvas BG</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            {CANVAS_BG_PRESETS.map((preset) => {
+              const color = theme === "dark" ? preset.dark : preset.light;
+              const isSelected = canvasBgId === preset.id;
+              return (
+                <button
+                  key={preset.id}
+                  type="button"
+                  title={`Canvas ${preset.name}`}
+                  aria-label={`Canvas background ${preset.name}`}
+                  onClick={() => onChangeCanvasBg?.(preset.id)}
+                  className={cn(
+                    "size-5 rounded-full border border-border/60 transition-transform hover:scale-115 focus-visible:outline-none",
+                    isSelected &&
+                      "scale-110 ring-2 ring-primary ring-offset-1 ring-offset-background",
+                  )}
+                  style={{ backgroundColor: color }}
+                />
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Dotted Grid and Toggle BG on export buttons */}
+        <div className="flex flex-col gap-3">
+          {/* Dotted Grid Toggle */}
+          <div className="flex items-center justify-between">
+            <label
+              htmlFor="dotted-grid"
+              className="flex items-center gap-2 text-sm font-medium text-muted-foreground"
+            >
+              <Grid className="size-4" />
+              Dotted Grid
+            </label>
+            <Switch
+              id="dotted-grid"
+              checked={isDotted}
+              onCheckedChange={onToggleDotted}
+              className="data-[state=checked]:border-primary data-[state=checked]:bg-primary"
+            />
+          </div>
+
+          {/* Export with Background Toggle */}
+          <div className="flex items-center justify-between">
+            <label
+              htmlFor="export-background"
+              className="flex items-center gap-2 text-sm font-medium text-muted-foreground"
+            >
+              <ImageDown className="size-4" />
+              Export with BG
+            </label>
+            <Switch
+              id="export-background"
+              checked={includeBgOnExport}
+              onCheckedChange={onToggleIncludeBgOnExport}
+              className="data-[state=checked]:border-primary data-[state=checked]:bg-primary"
+            />
           </div>
         </div>
       </div>

@@ -1,9 +1,10 @@
 {
-  "name": "@packages/typescript-config",
+  "name": "@vizi/typescript-config",
   "version": "0.0.0",
   "private": true,
   "files": [
     "base.json",
-    "nextjs.json"
+    "nextjs.json",
+    "node.json"
   ]
 }

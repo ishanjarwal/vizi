@@ -8,6 +8,7 @@ import {
 import "./globals.css";
 import { cn } from "cn";
 import { ThemeProvider } from "next-themes";
+import { Toaster } from "@/shared/components/shadcn/sonner";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -61,6 +62,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

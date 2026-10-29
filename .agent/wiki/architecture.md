@@ -6,13 +6,23 @@ Vizi is organized as a standard Turborepo monorepo using `pnpm` workspaces. This
 
 ```
 vizi/
+├── .env.dev                    # Root dev env (injects NEXT_PUBLIC_* build args for Docker)
+├── .env.prod                   # Root prod env (injects NEXT_PUBLIC_* build args for Docker)
+├── docker-compose.yml          # Multi-container orchestration (server, web, healthchecks)
 ├── apps/
 │   ├── web/                    # Next.js (App Router), React, Tailwind, shadcn/ui
+│   │   ├── Dockerfile          # Multi-stage standalone Next.js container build
+│   │   ├── .env.development   # Local Next.js dev variables
+│   │   ├── .env.production    # Production web runtime variables (compose env_file)
 │   │   ├── app/                # Route definitions (/ and /room/[id])
 │   │   ├── components/         # Canvas UI, toolbar, properties panel, modals
 │   │   ├── hooks/              # useCanvas, useWebSocket, useSyncState
 │   │   └── lib/                # Canvas rendering pipeline & math utilities
 │   └── server/                 # Lightweight Node.js WebSocket Server
+│       ├── Dockerfile          # Multi-stage Node.js server container build
+│       ├── docker-entrypoint.sh# Container bootstrap & DB preparation
+│       ├── .env.dev            # Local server dev variables (tsx watch --env-file)
+│       ├── .env.prod           # Production server runtime variables (compose env_file)
 │       ├── src/
 │       │   ├── room/           # Room manager & in-memory room lifecycle
 │       │   ├── websocket/      # Connection handlers & router
@@ -121,6 +131,14 @@ To achieve near-zero latency without heavyweight CRDT operational overhead, Vizi
 4. **Tombstone Deletion**:
    - Deleted elements are marked with `isDeleted: true` and retained for a grace period. This prevents an out-of-order delayed update from resurrecting an element that was previously deleted.
 
+### 4.2 Orphaned & Inactive Room Lifecycle (Inngest Worker)
+
+To prevent unbounded database growth and clear orphaned data, the backend integrates an **Inngest scheduled worker** (`cleanup-orphaned-rooms`):
+- **Trigger**: Runs periodically on a cron schedule (`ROOM_CLEANUP_CRON`, default: hourly `0 * * * *`) and on-demand via event `vizi/rooms.cleanup`.
+- **Retention Rule**: Rooms and associated canvas elements that have not been modified or accessed for $\ge 1$ day (`ROOM_RETENTION_MS`, default: 24h) are identified.
+- **Active Session Safety**: If a candidate room has connected WebSocket peers in memory or recent in-memory activity, it is automatically protected and skipped.
+- **Atomic Deletion**: Stale rooms and their canvas elements are atomically deleted from the database in a transaction and evicted from memory.
+
 ---
 
 ## 5. Fault Tolerance & Network Resilience
@@ -151,7 +169,69 @@ stateDiagram-v2
 
 ---
 
-## 6. Guidelines for AI Coding Agents
+## 6. Docker Containerization & Environment Configuration
+
+### 6.1 Multi-Stage Container Pipeline
+
+The repository includes production Dockerfiles for each service and a unified `docker-compose.yml` for containerized environments:
+
+- **`apps/server/Dockerfile`**:
+  - Multi-stage build (Node 22-slim base, builder with pnpm corepack, protocol compilation, Prisma generation, tsup build).
+  - Unprivileged `vizi` user (UID 1001) for runtime isolation.
+  - Custom `docker-entrypoint.sh` executing Prisma migrations before starting the Node process.
+  - Integrated HTTP `/health` check via `wget`.
+- **`apps/web/Dockerfile`**:
+  - Multi-stage standalone Next.js build.
+  - Injects `NEXT_PUBLIC_API_URL` and `NEXT_PUBLIC_WS_URL` build arguments during `next build`.
+  - Unprivileged `nextjs` user (UID 1001) running Next.js standalone output (`apps/web/server.js`).
+  - Web service depends on `server` reaching healthy status (`condition: service_healthy`).
+
+### 6.2 Two-Tier Environment Variable Architecture
+
+Environment variables are partitioned between root-level build triggers and app-level service runtimes:
+
+```
+vizi/
+├── .env.dev                    # Root: Dev NEXT_PUBLIC_* variables for Docker image builds
+├── .env.prod                   # Root: Prod NEXT_PUBLIC_* variables for Docker image builds
+├── apps/
+│   ├── web/
+│   │   ├── .env.development    # Next.js dev server variables (pnpm dev)
+│   │   └── .env.production     # Next.js standalone container runtime variables
+│   └── server/
+│       ├── .env.dev            # Server dev variables (loaded via tsx --env-file)
+│       └── .env.prod           # Server container runtime variables
+```
+
+#### Why Root Environment Files Exist
+Next.js compiles public environment variables (`NEXT_PUBLIC_*`) directly into static JavaScript bundles at **build time** during `next build`. When building Docker images, these values must be present in the Docker build context. 
+
+Docker Compose bridges this by reading `${NEXT_PUBLIC_API_URL}` and `${NEXT_PUBLIC_WS_URL}` from the root environment file and forwarding them as `args` to `apps/web/Dockerfile`. The root `.env.dev` and `.env.prod` exist specifically for this purpose.
+
+#### Application-Level Runtime Isolation
+- `apps/server/.env.prod`: Injected into `vizi-server` at container runtime via `docker-compose.yml` (`env_file: apps/server/.env.prod`) to configure internal Docker networking (`postgres:5432`), CORS origins, and heartbeat thresholds.
+- `apps/web/.env.production`: Injected into `vizi-web` at container runtime via `docker-compose.yml` (`env_file: apps/web/.env.production`).
+
+### 6.3 Docker Compose CLI & `--env-file` Requirement
+
+By default, Docker Compose looks for a file named `.env` in the working directory. Because this project uses environment-explicit root files (`.env.dev` and `.env.prod`), **the `--env-file` parameter must be provided explicitly** whenever invoking Docker Compose:
+
+```bash
+# Development container build and startup
+docker compose --env-file .env.dev build
+docker compose --env-file .env.dev up -d
+
+# Production container build and startup
+docker compose --env-file .env.prod build
+docker compose --env-file .env.prod up -d
+
+# Teardown
+docker compose --env-file .env.prod down
+```
+
+---
+
+## 7. Guidelines for AI Coding Agents
 
 When implementing features or modifying existing code in this repository:
 
